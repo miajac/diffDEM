@@ -31,6 +31,8 @@ class DEMDifferencer:
         File path to the first DEM.
     path_dem2 : str
         File path to the second DEM (used as the reference grid).
+    path_dest : str
+        File path for the final product (the differenced DEM).
     nickname_dem1 : str
         Shortened name for DEM 1, used in plot titles and output filename.
     nickname_dem2 : str
@@ -63,9 +65,6 @@ class DEMDifferencer:
     TARGET_HCRS = "EPSG:32606" # WGS 84 / UTM zone 6N
     TARGET_VCRS = "EGM96" # same as 'EPSG:5773', geoid
 
-    # File path for differenced DEM to be saved to
-    OUTPUT_DIR  = "/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/"
-
     # NAVD88 GEOID09 grid file for converting between NAD83 (EPSG:4269) and 
     #   NAVD88 (EPSG:5703) coordinate systems, Auto-downloaded from cdn.proj.org 
     #   on first use
@@ -77,6 +76,7 @@ class DEMDifferencer:
         self,
         path_dem1,
         path_dem2,
+        path_dest,
         nickname_dem1,
         nickname_dem2,
         src_vcrs_dem1,
@@ -90,6 +90,7 @@ class DEMDifferencer:
     ):
         self.path_dem1     = path_dem1
         self.path_dem2     = path_dem2
+        self.path_dest     = path_dest
         self.nickname_dem1 = nickname_dem1
         self.nickname_dem2 = nickname_dem2
         self.src_vcrs_dem1 = src_vcrs_dem1
@@ -100,6 +101,9 @@ class DEMDifferencer:
         self.nodata_dem2   = nodata_dem2
         self.roi           = roi
         self.coregister    = coregister
+
+        # File path for differenced DEM to be saved to
+        OUTPUT_DIR  = self.path_dest
 
         # Output path: <dem2_nickname>_<dem1_nickname>.tif
         self.output_path = (
@@ -444,19 +448,20 @@ class DEMDifferencer:
 if __name__ == "__main__":
 
     differencer = DEMDifferencer(
-        path_dem1     = '/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif',
+        path_dem1     = '~/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif',
         nickname_dem1 = 'IFSAR_DTM_2010',
         src_vcrs_dem1 = 'NAVD88',    # stored as unknown in metadata, known to be NAVD88
                                         # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
         src_hcrs_dem1 = 'EPSG:3338', # NAD83 / Alaska Albers 
         nodata_dem1   = -9999,
-        coregister = True,
-        path_dem2     = '/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/Canwell_4Aug25_DTM.tif', # most recent DEM
+        path_dem2     = '~/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/Canwell_4Aug25_DTM.tif', # most recent DEM
         nickname_dem2 = 'Lidar2025',
         src_vcrs_dem2 = 'Ellipsoid',
         src_hcrs_dem2 = 'EPSG:32606',
+        coregister = True,
         nodata_dem2   = -9999,
         roi           = None,
+        path_dest = '~/REPOS/diffDEMs/differencedDEMs' # file path for differenced DEMs
     )
 
     differencer.run()
