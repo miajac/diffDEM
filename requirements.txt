@@ -1,0 +1,11 @@
+This document lists the items to be installed on your local 
+environment when you are using this repository. 
+Alternatively, users can use the diffDEM.yml file to directly create 
+an evironment suited for this repository using: conda env create -f
+diffDEM.yml
+
+List of required installations:
+geoutils
+numpy
+xdem
+pyproj

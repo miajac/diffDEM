@@ -30,3 +30,11 @@ For the purposes of this class (GEOS 694), I have successfully adapted my code
 into a class format (completing task #1), but because I want to adapt this 
 code so that it can be used on chinook (task #2), I need to also figure out how 
 to effectively parallelize this code (secondary task #1).
+
+Contained files:
+dem_diff.py - This file is made for differencing two DEMs with differing grids, pixel sizes, horizontal coordinate systems, and vertical coordinate systems. Users should know the horizontal and vertical coordinate system of each DEM, as well as the NoData value. 
+
+requirements.txt - This file contains the names of required installations for successfully running this script.
+
+demDiff.yml - This file can be used to create a local environment that can be used for running the dem_diff.py script.
+
