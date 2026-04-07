@@ -7,6 +7,8 @@ To call this file:
 
     $ python dem_diff.py
 
+Must customize run parameters at the bottom of this script. 
+
 Requirements: os, sys, geoutils, numpy, xdem, pyproj
 """
 
@@ -448,13 +450,13 @@ class DEMDifferencer:
 if __name__ == "__main__":
 
     differencer = DEMDifferencer(
-        path_dem1     = '~/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif',
+        path_dem1     = '~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif',
         nickname_dem1 = 'IFSAR_DTM_2010',
         src_vcrs_dem1 = 'NAVD88',    # stored as unknown in metadata, known to be NAVD88
                                         # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
         src_hcrs_dem1 = 'EPSG:3338', # NAD83 / Alaska Albers 
         nodata_dem1   = -9999,
-        path_dem2     = '~/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/Canwell_4Aug25_DTM.tif', # most recent DEM
+        path_dem2     = '~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif', # most recent DEM
         nickname_dem2 = 'Lidar2025',
         src_vcrs_dem2 = 'Ellipsoid',
         src_hcrs_dem2 = 'EPSG:32606',
@@ -466,11 +468,11 @@ if __name__ == "__main__":
 
     differencer.run()
 
-## example parameters for each dem:
-## user must still specify 1 or 2 for each parameter 
+## Example parameters for each dem:
+## user must still specify whether each DEM is 1 or 2
 
 ## IFSAR DSM:
-# path_dem     = '/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DSM_Summer_2010/IFSAR_DSM_Summer_2010.tif',
+# path_dem     = '~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DSM_Summer_2010/IFSAR_DSM_Summer_2010.tif',
 # nickname_dem = 'IFSAR_DSM_2010',
 # src_vcrs_dem = 'NAVD88',    # stored as unknown in metadata, known to be NAVD88
 #                                 # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
@@ -479,7 +481,7 @@ if __name__ == "__main__":
 # coregister   = True,
 
 ## IFSAR DTM:
-# path_dem     = '/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif',
+# path_dem     = '~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif',
 # nickname_dem = 'IFSAR_DTM_2010',
 # src_vcrs_dem = 'NAVD88',    # stored as unknown in metadata, known to be NAVD88
 #                                 # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
@@ -488,7 +490,7 @@ if __name__ == "__main__":
 # coregister   = True,
 
 ## Drone:
-# path_dem     = '/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/Drone_2025Aug13_DEM/Drone_2025Aug13_DEM.tif', # most recent
+# path_dem     = '~/REPOS/diffDEMs/exampleData/Drone_2025Aug13_DEM/Drone_2025Aug13_DEM.tif', # most recent
 # nickname_dem = 'CanwellDrone08132025',
 # src_vcrs_dem = 'Ellipsoid',
 # src_hcrs_dem = 'EPSG:32606',
@@ -496,7 +498,7 @@ if __name__ == "__main__":
 # coregister   = False,
 
 ## Isabel pass:
-# path_dem     = '/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/Isabel-Horz-Alaska-AEAC/IsabelPass_DSM_2000.tif',
+# path_dem     = '~/REPOS/diffDEMs/exampleData/Isabel-Horz-Alaska-AEAC/IsabelPass_DSM_2000.tif',
 # nickname_dem = 'IsabelIFSAR2000',
 # src_vcrs_dem = 'EGM96',
 # src_hcrs_dem = 'EPSG:32606',
@@ -504,7 +506,7 @@ if __name__ == "__main__":
 # coregister   = True,
 
 ## Arctic DEM:
-# path_dem     = '/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/ArcticDEM_20090606_EPSG_4326_most.tif',
+# path_dem     = '~/REPOS/diffDEMs/exampleData/ArcticDEM_20090606_EPSG_4326_most.tif',
 # nickname_dem = 'Arctic2009_06_06',
 # src_vcrs_dem = 'Ellipsoid',
 # src_hcrs_dem = 'EPSG:4326',
@@ -512,7 +514,7 @@ if __name__ == "__main__":
 # coregister   = False,
 
 ## 2025 Lidar Survey:
-# path_dem     = '/Users/miajacoombs/REPOS/GEOS694_ICG/Labs/Lab7/DEMs/Canwell_4Aug25_DTM.tif', # most recent
+# path_dem     = '~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif', # most recent
 # nickname_dem = 'Lidar2025',
 # src_vcrs_dem = 'Ellipsoid',
 # src_hcrs_dem = 'EPSG:32606',
