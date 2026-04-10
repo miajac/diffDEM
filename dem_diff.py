@@ -119,6 +119,7 @@ class DEMDifferencer:
         self.dem2 = None
         self.diff_dem = None
     
+
     def _check_grids(self):
         """
         Verify that required projection grid files are available locally or 
@@ -185,6 +186,7 @@ class DEMDifferencer:
         self.dem1.info()
         print(f"{self.nickname_dem2} raster info:")
         self.dem2.info()
+
 
     def _prepare_dem(self, dem, src_hcrs, src_vcrs, nodata, nickname, src_path):
 
@@ -259,6 +261,7 @@ class DEMDifferencer:
 
         return dem
 
+
     def prepare(self):
 
         """Apply CRS assignment, vertical conversion, and horizontal
@@ -278,6 +281,7 @@ class DEMDifferencer:
         self.dem1.info()
         print(f"{self.nickname_dem2}:")
         self.dem2.info()
+
 
     def align(self):
 
@@ -326,6 +330,7 @@ class DEMDifferencer:
         print(f"{self.nickname_dem2}:")
         self.dem2.info()
     
+
     def _coregister(self):
 
         """
@@ -365,6 +370,7 @@ class DEMDifferencer:
         print(f"{self.nickname_dem1}:")
         self.dem1.info()
 
+
     def difference(self):
 
         """Difference the two aligned DEMs (DEM2 - DEM1) and print stats."""
@@ -375,6 +381,7 @@ class DEMDifferencer:
         self.diff_dem.set_vcrs(self.TARGET_VCRS)
         print("\nDifference DEM stats:")
         self.diff_dem.info(stats=True)
+
 
     def check_stable_terrain(self):
 
@@ -408,6 +415,7 @@ class DEMDifferencer:
         else:
             print(f" Offset within acceptable range — vertical datums appear consistent")
 
+
     def plot(self):
     
         """Plot both input DEMs and the differenced DEM."""
@@ -425,12 +433,14 @@ class DEMDifferencer:
             cbar_title=f"{self.nickname_dem2} - {self.nickname_dem1} (m)"
         )
 
+
     def save(self):
 
         """Save the differenced DEM to the output path."""
 
         self.diff_dem.to_file(self.output_path)
         print(f"\nDifferenced DEM saved to: {self.output_path}")
+
 
     def run(self):
 
