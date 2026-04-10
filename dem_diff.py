@@ -184,8 +184,8 @@ class DEMDifferencer:
         """Load both DEMs from file and print info before any corrections."""
 
         # add DEMs and manually assert their no data values
-        self.dem1 = xdem.DEM(self.path_dem1, nodata=self.nodata_dem1)
-        self.dem2 = xdem.DEM(self.path_dem2, nodata=self.nodata_dem2)
+        self.dem1 = xdem.DEM(self.path_dem1, nodata = self.nodata_dem1)
+        self.dem2 = xdem.DEM(self.path_dem2, nodata = self.nodata_dem2)
         
         # Print DEM information before corrections are accomplished
         print("Before corrections:")
@@ -437,7 +437,7 @@ class DEMDifferencer:
         # Stamp vertical CRS on diff DEM since arithmetic drops it
         self.diff_dem.set_vcrs(self.TARGET_VCRS)
         print("\nDifference DEM stats:")
-        self.diff_dem.info(stats=True)
+        self.diff_dem.info(stats = True)
 
 
     def check_stable_terrain(self):
@@ -453,14 +453,14 @@ class DEMDifferencer:
         flat_mask = (slope.data < 5) & (~np.ma.getmaskarray(self.diff_dem.data))
         diff_flat = self.diff_dem.data.data[flat_mask]
 
-        mean_offset   = np.mean(diff_flat)
+        mean_offset = np.mean(diff_flat)
         median_offset = np.median(diff_flat)
-        std_offset    = np.std(diff_flat)
+        std_offset = np.std(diff_flat)
 
         print(f"Flat terrain pixel count : {len(diff_flat)}")
-        print(f"Mean offset              : {mean_offset:.2f}m")
-        print(f"Median offset            : {median_offset:.2f}m")
-        print(f"Std dev                  : {std_offset:.2f}m")
+        print(f"Mean offset : {mean_offset:.2f}m")
+        print(f"Median offset : {median_offset:.2f}m")
+        print(f"Std dev : {std_offset:.2f}m")
 
         if abs(median_offset) > 2:
             print(
@@ -485,16 +485,16 @@ class DEMDifferencer:
         """Plot both input DEMs and the differenced DEM."""
         
         self.dem1.plot(
-            cmap="RdYlBu", vmin=0, vmax=2000,
-            cbar_title=f"{self.nickname_dem1} (m)"
+            cmap = "RdYlBu", vmin = 0, vmax = 2000,
+            cbar_title = f"{self.nickname_dem1} (m)"
         )
         self.dem2.plot(
-            cmap="RdYlBu", vmin=0, vmax=2000,
-            cbar_title=f"{self.nickname_dem2} (m)"
+            cmap = "RdYlBu", vmin = 0, vmax = 2000,
+            cbar_title = f"{self.nickname_dem2} (m)"
         )
         self.diff_dem.plot(
-            cmap="RdYlBu", vmin=-20, vmax=20,
-            cbar_title=f"{self.nickname_dem2} - {self.nickname_dem1} (m)"
+            cmap = "RdYlBu", vmin =- 20, vmax = 20,
+            cbar_title = f"{self.nickname_dem2} - {self.nickname_dem1} (m)"
         )
 
 
