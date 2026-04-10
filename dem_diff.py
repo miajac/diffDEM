@@ -92,22 +92,22 @@ class DEMDifferencer:
         roi = None,
         coregister = False,
     ):
-        self.path_dem1     = path_dem1
-        self.path_dem2     = path_dem2
-        self.path_dest     = path_dest
+        self.path_dem1 = path_dem1
+        self.path_dem2 = path_dem2
+        self.path_dest = path_dest
         self.nickname_dem1 = nickname_dem1
         self.nickname_dem2 = nickname_dem2
         self.src_vcrs_dem1 = src_vcrs_dem1
         self.src_hcrs_dem1 = src_hcrs_dem1
-        self.nodata_dem1   = nodata_dem1
+        self.nodata_dem1 = nodata_dem1
         self.src_vcrs_dem2 = src_vcrs_dem2
         self.src_hcrs_dem2 = src_hcrs_dem2
-        self.nodata_dem2   = nodata_dem2
-        self.roi           = roi
-        self.coregister    = coregister
+        self.nodata_dem2 = nodata_dem2
+        self.roi = roi
+        self.coregister = coregister
 
         # File path for differenced DEM to be saved to
-        OUTPUT_DIR  = self.path_dest
+        OUTPUT_DIR = self.path_dest
 
         # Output path: <dem2_nickname>_<dem1_nickname>.tif
         self.output_path = (
@@ -115,8 +115,8 @@ class DEMDifferencer:
         )
 
         # Placeholders for processed DEMs and output
-        self.dem1     = None
-        self.dem2     = None
+        self.dem1 = None
+        self.dem2 = None
         self.diff_dem = None
     
     def _check_grids(self):
@@ -138,17 +138,17 @@ class DEMDifferencer:
             data_dir = pyproj.datadir.get_data_dir()
             grid_path = os.path.join(data_dir, self.NAVD88_GRID)
             if os.path.exists(grid_path):
-                print(f"  [grid check] {self.NAVD88_GRID} found locally at {grid_path}")
+                print(f" [grid check] {self.NAVD88_GRID} found locally at {grid_path}")
             else:
-                print(f"  [grid check] {self.NAVD88_GRID} not found locally, attempting download from cdn.proj.org...")
+                print(f" [grid check] {self.NAVD88_GRID} not found locally, attempting download from cdn.proj.org...")
                 try:
                     tg = TransformerGroup("EPSG:4269", "EPSG:5703")
-                    tg.download_grids(verbose=True)
+                    tg.download_grids(verbose = True)
                     if os.path.exists(grid_path):
-                        print(f"  [grid check] download successful: {grid_path}")
+                        print(f" [grid check] download successful: {grid_path}")
                     else:
                         raise FileNotFoundError(
-                            f"Grid {self.NAVD88_GRID} could not be downloaded to {data_dir}. "
+                            f"Grid {self.NAVD88_GRID} could not be downloaded to {data_dir}."
                             f"Download it manually from https://cdn.proj.org/{self.NAVD88_GRID} "
                             f"and place it in {data_dir}"
                         )
@@ -175,11 +175,11 @@ class DEMDifferencer:
         print(f"{self.nickname_dem1} source vCRS: {self.src_vcrs_dem1}")
         print(f"{self.nickname_dem1} -> will be converted to hCRS: {self.TARGET_HCRS}, vCRS: {self.TARGET_VCRS}")
         print()
-        print(f"  {self.nickname_dem2} source file : {self.path_dem2}")
-        print(f"  {self.nickname_dem2} assigned nodata : {self.nodata_dem2}")
-        print(f"  {self.nickname_dem2} source hCRS : {self.src_hcrs_dem2}")
-        print(f"  {self.nickname_dem2} source vCRS : {self.src_vcrs_dem2}")
-        print(f"  {self.nickname_dem2} -> will be converted to hCRS: {self.TARGET_HCRS}, vCRS: {self.TARGET_VCRS}")
+        print(f"{self.nickname_dem2} source file : {self.path_dem2}")
+        print(f"{self.nickname_dem2} assigned nodata : {self.nodata_dem2}")
+        print(f"{self.nickname_dem2} source hCRS : {self.src_hcrs_dem2}")
+        print(f"{self.nickname_dem2} source vCRS : {self.src_vcrs_dem2}")
+        print(f"{self.nickname_dem2} -> will be converted to hCRS: {self.TARGET_HCRS}, vCRS: {self.TARGET_VCRS}")
         print()
         print(f"{self.nickname_dem1} raster info:")
         self.dem1.info()
@@ -210,26 +210,25 @@ class DEMDifferencer:
 
         # Convert uint to float32 to support negative difference values
         if dem.data.dtype in [np.uint8, np.uint16, np.uint32]:
-            print(f"  [{nickname}] converting dtype {dem.data.dtype} -> float32 to support negative values")
+            print(f"[{nickname}] converting dtype {dem.data.dtype} -> float32 to support negative values")
             dem = dem.astype(np.float32)
 
         # Assign source horizontal CRS
         dem.crs = src_hcrs
-        print(f"  [{nickname}] hCRS assigned: {src_hcrs}")
+        print(f"[{nickname}] hCRS assigned: {src_hcrs}")
 
         # Handle vertical CRS conversion
         # If converting from NAVD88 a two-step conversion is required since xdem
         # cannot go directly from NAVD88 to EGM96:
         #   Step 1: NAVD88 to Ellipsoid using NOAA GEOID09 Alaska grid
         #   Step 2: Ellipsoid to EGM96 (handled by xdem)
-
         if src_vcrs in ("EPSG:5703", "NAVD88"):
             print(f"[{nickname}] vCRS is NAVD88 — using two-step conversion:")
-            print(f"[{nickname}]   Step 1: NAVD88 -> Ellipsoid (inverse of {self.NAVD88_GRID})")
-            print(f"[{nickname}]   Note: {self.NAVD88_GRID} will be auto-downloaded from cdn.proj.org if not cached")
+            print(f"[{nickname}] Step 1: NAVD88 -> Ellipsoid (inverse of {self.NAVD88_GRID})")
+            print(f"[{nickname}] Note: {self.NAVD88_GRID} will be auto-downloaded from cdn.proj.org if not cached")
             dem.set_vcrs(self.NAVD88_GRID)
             dem.to_vcrs("Ellipsoid")
-            print(f"[{nickname}]   Step 2: Ellipsoid -> {self.TARGET_VCRS}")
+            print(f"[{nickname}] Step 2: Ellipsoid -> {self.TARGET_VCRS}")
             dem.set_vcrs("Ellipsoid")
             dem.to_vcrs(self.TARGET_VCRS)
         else:
@@ -303,23 +302,23 @@ class DEMDifferencer:
         res1 = self.dem1.res[0]
         res2 = self.dem2.res[0]
 
-        print(f"\n  [{self.nickname_dem1}] pixel size: {res1}m")
-        print(f"  [{self.nickname_dem2}] pixel size: {res2}m")
+        print(f"\n [{self.nickname_dem1}] pixel size: {res1}m")
+        print(f"[{self.nickname_dem2}] pixel size: {res2}m")
 
         if res1 >= res2:
             # dem1 is coarser or equal — reproject dem2 onto dem1's grid
-            print(f"  {self.nickname_dem1} is coarser ({res1}m >= {res2}m) — reprojecting {self.nickname_dem2} to match")
+            print(f"{self.nickname_dem1} is coarser ({res1}m >= {res2}m) — reprojecting {self.nickname_dem2} to match")
             self.dem2 = self.dem2.reproject(self.dem1, resampling="bilinear")
             self.dem2.set_vcrs(self.TARGET_VCRS)
             self.dem1.set_vcrs(self.TARGET_VCRS)
-            print(f"  Reference grid: {self.nickname_dem1}")
+            print(f"Reference grid: {self.nickname_dem1}")
         else:
             # dem2 is coarser — reproject dem1 onto dem2's grid
-            print(f"  {self.nickname_dem2} is coarser ({res2}m > {res1}m) — reprojecting {self.nickname_dem1} to match")
+            print(f"{self.nickname_dem2} is coarser ({res2}m > {res1}m) — reprojecting {self.nickname_dem1} to match")
             self.dem1 = self.dem1.reproject(self.dem2, resampling="bilinear")
             self.dem1.set_vcrs(self.TARGET_VCRS)
             self.dem2.set_vcrs(self.TARGET_VCRS)
-            print(f"  Reference grid: {self.nickname_dem2}")
+            print(f"Reference grid: {self.nickname_dem2}")
 
         print("\nAfter full alignment:")
         print(f"{self.nickname_dem1}:")
@@ -452,19 +451,19 @@ class DEMDifferencer:
 if __name__ == "__main__":
 
     differencer = DEMDifferencer(
-        path_dem1     = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif",
+        path_dem1 = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif",
         nickname_dem1 = "IFSAR_DTM_2010",
         src_vcrs_dem1 = "NAVD88",    # stored as unknown in metadata, known to be NAVD88
                                         # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
         src_hcrs_dem1 = "EPSG:3338", # NAD83 / Alaska Albers 
-        nodata_dem1   = -9999,
-        path_dem2     = "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif", # most recent DEM
+        nodata_dem1 = -9999,
+        path_dem2 = "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif", # most recent DEM
         nickname_dem2 = "Lidar2025",
         src_vcrs_dem2 = "Ellipsoid",
         src_hcrs_dem2 = "EPSG:32606",
         coregister = True,
-        nodata_dem2   = -9999,
-        roi           = None,
+        nodata_dem2 = -9999,
+        roi = None,
         path_dest = "~/REPOS/diffDEMs/differencedDEMs" # file path for differenced DEMs
     )
 
@@ -474,50 +473,50 @@ if __name__ == "__main__":
 ## user must still specify whether each DEM is 1 or 2
 
 ## IFSAR DSM:
-# path_dem     = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DSM_Summer_2010/IFSAR_DSM_Summer_2010.tif",
+# path_dem = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DSM_Summer_2010/IFSAR_DSM_Summer_2010.tif",
 # nickname_dem = "IFSAR_DSM_2010",
 # src_vcrs_dem = "NAVD88",    # stored as unknown in metadata, known to be NAVD88
 #                                 # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
 # src_hcrs_dem = "EPSG:3338", # NAD83 / Alaska Albers 
-# nodata_dem   = -9999,
-# coregister   = True,
+# nodata_dem = -9999,
+# coregister = True,
 
 ## IFSAR DTM:
-# path_dem     = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif",
+# path_dem = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif",
 # nickname_dem = "IFSAR_DTM_2010",
 # src_vcrs_dem = "NAVD88",    # stored as unknown in metadata, known to be NAVD88
 #                                 # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
 # src_hcrs_dem = "EPSG:3338", # NAD83 / Alaska Albers 
-# nodata_dem   = -9999,
-# coregister   = True,
+# nodata_dem = -9999,
+# coregister = True,
 
 ## Drone:
-# path_dem     = "~/REPOS/diffDEMs/exampleData/Drone_2025Aug13_DEM/Drone_2025Aug13_DEM.tif",
+# path_dem = "~/REPOS/diffDEMs/exampleData/Drone_2025Aug13_DEM/Drone_2025Aug13_DEM.tif",
 # nickname_dem = "CanwellDrone08132025",
 # src_vcrs_dem = "Ellipsoid",
 # src_hcrs_dem = "EPSG:32606",
-# nodata_dem   = -9999,
-# coregister   = False,
+# nodata_dem = -9999,
+# coregister = False,
 
 ## Isabel pass:
-# path_dem     = "~/REPOS/diffDEMs/exampleData/Isabel-Horz-Alaska-AEAC/IsabelPass_DSM_2000.tif",
+# path_dem = "~/REPOS/diffDEMs/exampleData/Isabel-Horz-Alaska-AEAC/IsabelPass_DSM_2000.tif",
 # nickname_dem = "IsabelIFSAR2000",
 # src_vcrs_dem = "EGM96",
 # src_hcrs_dem = "EPSG:32606",
-# nodata_dem   = 0,
-# coregister   = True,
+# nodata_dem = 0,
+# coregister = True,
 
 ## Arctic DEM:
-# path_dem     = "~/REPOS/diffDEMs/exampleData/ArcticDEM_20090606_EPSG_4326_most.tif",
+# path_dem = "~/REPOS/diffDEMs/exampleData/ArcticDEM_20090606_EPSG_4326_most.tif",
 # nickname_dem = "Arctic2009_06_06",
 # src_vcrs_dem = "Ellipsoid",
 # src_hcrs_dem = "EPSG:4326",
-# nodata_dem   = -9999,
-# coregister   = False,
+# nodata_dem = -9999,
+# coregister = False,
 
 ## 2025 Lidar Survey:
-# path_dem     = "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif",
+# path_dem = "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif",
 # nickname_dem = "Lidar2025",
 # src_vcrs_dem = "Ellipsoid",
 # src_hcrs_dem = "EPSG:32606",
-# nodata_dem   = -9999,                       
+# nodata_dem = -9999,                       
