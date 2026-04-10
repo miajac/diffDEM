@@ -1,0 +1,40 @@
+DEM Differencing toolkit 
+
+What is this repo??
+This repository aims to provide generalized scripts that enable accurate and 
+interpretable differenced digital elevation models (DEMs) from DEMs that have 
+differing grids, pixel sizes, horizontal and vertical coordinate reference 
+systems, and extents. 
+It provides options for adapting this differencing pipeline to local and 
+supercomputer systems and features examples (that include necessary data) 
+that can be used to help users gain confidence working with this repository. 
+This pipeline builds on and utilizes many of the functions created by xdem.
+
+How??
+This repository contains (or will contain) three major parts.
+#1: A basic script that can be used to difference two DEMs.
+#2: A script similar to #1 but adapted to be run on a supercomputer (like UAF's 
+Chinook), with an accompanying .sh file. 
+#3: An example implementation of both scripts using provided data.
+
+Why??
+The goal of this repository is to create a standard pipeline for differencing 
+DEMs. I created this because I need to difference ~40 DEMs of one general region
+, that have very different coordinate reference systems, extents, and 
+resolutions. While xdem has provided a valueable resource for standardizing this
+process, the DEMs I use required some additional functionality that their
+established pipelines did not have, making this pipeline necessary. 
+
+
+For the purposes of this class (GEOS 694), I have successfully adapted my code 
+into a class format (completing task #1), but because I want to adapt this 
+code so that it can be used on chinook (task #2), I need to also figure out how 
+to effectively parallelize this code (secondary task #1).
+
+Contained files:
+dem_diff.py - This file is made for differencing two DEMs with differing grids, pixel sizes, horizontal coordinate systems, and vertical coordinate systems. Users should know the horizontal and vertical coordinate system of each DEM, as well as the NoData value. 
+
+requirements.txt - This file contains the names of required installations for successfully running this script.
+
+demDiff.yml - This file can be used to create a local environment that can be used for running the dem_diff.py script.
+
