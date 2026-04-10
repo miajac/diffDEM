@@ -1,7 +1,8 @@
 """
-dem_diff.py was created to difference dems that have differing grids, pixel 
-sizes, horizontal coordinate systems, and vertical coordinate systems. It will 
-save a raster file of the differenced dem to the folder of your choosing.  
+dem_diff.py was created to difference digital elevation models (DEMs) that have 
+differing grids, pixel sizes, horizontal coordinate systems, and vertical 
+coordinate systems. It will save a raster file of the differenced dem to your 
+folder of choice.  
 
 To call this file:
 
@@ -14,10 +15,11 @@ Requirements: os, sys, geoutils, numpy, xdem, pyproj
 
 import os
 import sys
-import geoutils as gu
-import numpy as np
 import xdem
 import pyproj
+import geoutils as gu
+import numpy as np
+
 from pyproj.transformer import TransformerGroup
 
 class DEMDifferencer:
@@ -65,14 +67,14 @@ class DEMDifferencer:
 
     # Final target CRS for the DEMs
     TARGET_HCRS = "EPSG:32606" # WGS 84 / UTM zone 6N
-    TARGET_VCRS = "EGM96" # same as 'EPSG:5773', geoid
+    TARGET_VCRS = "EGM96" # same as "EPSG:5773", geoid
 
     # NAVD88 GEOID09 grid file for converting between NAD83 (EPSG:4269) and 
-    #   NAVD88 (EPSG:5703) coordinate systems, Auto-downloaded from cdn.proj.org 
-    #   on first use
+    # NAVD88 (EPSG:5703) coordinate systems. Auto-downloaded from cdn.proj.org 
+    # on first use
     NAVD88_GRID = "us_noaa_geoid09_ak.tif"
 
-    # initiate variables user defined, with some variables having default 
+    # Initiate variables user defined, with some variables having default 
     # settings if users do not specify
     def __init__(
         self,
@@ -254,7 +256,7 @@ class DEMDifferencer:
         # Re-stamp vertical CRS since reproject drops it
         dem.set_vcrs(self.TARGET_VCRS)
         print(f"[{nickname}] vCRS re-stamped after reproject: {self.TARGET_VCRS}")
-        print(f"[{nickname}] source file: {dem.filename if dem.filename else 'in-memory (reprojected from ' + src_path + ')'}")
+        print(f"[{nickname}] source file: {dem.filename if dem.filename else "in-memory (reprojected from " + src_path + ")"}")
 
         return dem
 
@@ -338,9 +340,9 @@ class DEMDifferencer:
         nuth_kaab = xdem.coreg.NuthKaab()
         nuth_kaab.fit(self.dem2, self.dem1)
 
-        shift_x = nuth_kaab.meta['outputs']['affine']['shift_x']
-        shift_y = nuth_kaab.meta['outputs']['affine']['shift_y']
-        shift_z = nuth_kaab.meta['outputs']['affine']['shift_z']
+        shift_x = nuth_kaab.meta["outputs"]["affine"]["shift_x"]
+        shift_y = nuth_kaab.meta["outputs"]["affine"]["shift_y"]
+        shift_z = nuth_kaab.meta["outputs"]["affine"]["shift_z"]
 
         print(f"Detected shift_x: {shift_x:.3f}m")
         print(f"Detected shift_y: {shift_y:.3f}m")
@@ -450,20 +452,20 @@ class DEMDifferencer:
 if __name__ == "__main__":
 
     differencer = DEMDifferencer(
-        path_dem1     = '~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif',
-        nickname_dem1 = 'IFSAR_DTM_2010',
-        src_vcrs_dem1 = 'NAVD88',    # stored as unknown in metadata, known to be NAVD88
+        path_dem1     = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif",
+        nickname_dem1 = "IFSAR_DTM_2010",
+        src_vcrs_dem1 = "NAVD88",    # stored as unknown in metadata, known to be NAVD88
                                         # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
-        src_hcrs_dem1 = 'EPSG:3338', # NAD83 / Alaska Albers 
+        src_hcrs_dem1 = "EPSG:3338", # NAD83 / Alaska Albers 
         nodata_dem1   = -9999,
-        path_dem2     = '~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif', # most recent DEM
-        nickname_dem2 = 'Lidar2025',
-        src_vcrs_dem2 = 'Ellipsoid',
-        src_hcrs_dem2 = 'EPSG:32606',
+        path_dem2     = "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif", # most recent DEM
+        nickname_dem2 = "Lidar2025",
+        src_vcrs_dem2 = "Ellipsoid",
+        src_hcrs_dem2 = "EPSG:32606",
         coregister = True,
         nodata_dem2   = -9999,
         roi           = None,
-        path_dest = '~/REPOS/diffDEMs/differencedDEMs' # file path for differenced DEMs
+        path_dest = "~/REPOS/diffDEMs/differencedDEMs" # file path for differenced DEMs
     )
 
     differencer.run()
@@ -472,50 +474,50 @@ if __name__ == "__main__":
 ## user must still specify whether each DEM is 1 or 2
 
 ## IFSAR DSM:
-# path_dem     = '~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DSM_Summer_2010/IFSAR_DSM_Summer_2010.tif',
-# nickname_dem = 'IFSAR_DSM_2010',
-# src_vcrs_dem = 'NAVD88',    # stored as unknown in metadata, known to be NAVD88
+# path_dem     = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DSM_Summer_2010/IFSAR_DSM_Summer_2010.tif",
+# nickname_dem = "IFSAR_DSM_2010",
+# src_vcrs_dem = "NAVD88",    # stored as unknown in metadata, known to be NAVD88
 #                                 # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
-# src_hcrs_dem = 'EPSG:3338', # NAD83 / Alaska Albers 
+# src_hcrs_dem = "EPSG:3338", # NAD83 / Alaska Albers 
 # nodata_dem   = -9999,
 # coregister   = True,
 
 ## IFSAR DTM:
-# path_dem     = '~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif',
-# nickname_dem = 'IFSAR_DTM_2010',
-# src_vcrs_dem = 'NAVD88',    # stored as unknown in metadata, known to be NAVD88
+# path_dem     = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif",
+# nickname_dem = "IFSAR_DTM_2010",
+# src_vcrs_dem = "NAVD88",    # stored as unknown in metadata, known to be NAVD88
 #                                 # two-step conversion: NAVD88 -> Ellipsoid -> EGM96, via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
-# src_hcrs_dem = 'EPSG:3338', # NAD83 / Alaska Albers 
+# src_hcrs_dem = "EPSG:3338", # NAD83 / Alaska Albers 
 # nodata_dem   = -9999,
 # coregister   = True,
 
 ## Drone:
-# path_dem     = '~/REPOS/diffDEMs/exampleData/Drone_2025Aug13_DEM/Drone_2025Aug13_DEM.tif', # most recent
-# nickname_dem = 'CanwellDrone08132025',
-# src_vcrs_dem = 'Ellipsoid',
-# src_hcrs_dem = 'EPSG:32606',
+# path_dem     = "~/REPOS/diffDEMs/exampleData/Drone_2025Aug13_DEM/Drone_2025Aug13_DEM.tif",
+# nickname_dem = "CanwellDrone08132025",
+# src_vcrs_dem = "Ellipsoid",
+# src_hcrs_dem = "EPSG:32606",
 # nodata_dem   = -9999,
 # coregister   = False,
 
 ## Isabel pass:
-# path_dem     = '~/REPOS/diffDEMs/exampleData/Isabel-Horz-Alaska-AEAC/IsabelPass_DSM_2000.tif',
-# nickname_dem = 'IsabelIFSAR2000',
-# src_vcrs_dem = 'EGM96',
-# src_hcrs_dem = 'EPSG:32606',
+# path_dem     = "~/REPOS/diffDEMs/exampleData/Isabel-Horz-Alaska-AEAC/IsabelPass_DSM_2000.tif",
+# nickname_dem = "IsabelIFSAR2000",
+# src_vcrs_dem = "EGM96",
+# src_hcrs_dem = "EPSG:32606",
 # nodata_dem   = 0,
 # coregister   = True,
 
 ## Arctic DEM:
-# path_dem     = '~/REPOS/diffDEMs/exampleData/ArcticDEM_20090606_EPSG_4326_most.tif',
-# nickname_dem = 'Arctic2009_06_06',
-# src_vcrs_dem = 'Ellipsoid',
-# src_hcrs_dem = 'EPSG:4326',
+# path_dem     = "~/REPOS/diffDEMs/exampleData/ArcticDEM_20090606_EPSG_4326_most.tif",
+# nickname_dem = "Arctic2009_06_06",
+# src_vcrs_dem = "Ellipsoid",
+# src_hcrs_dem = "EPSG:4326",
 # nodata_dem   = -9999,
 # coregister   = False,
 
 ## 2025 Lidar Survey:
-# path_dem     = '~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif', # most recent
-# nickname_dem = 'Lidar2025',
-# src_vcrs_dem = 'Ellipsoid',
-# src_hcrs_dem = 'EPSG:32606',
+# path_dem     = "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif",
+# nickname_dem = "Lidar2025",
+# src_vcrs_dem = "Ellipsoid",
+# src_hcrs_dem = "EPSG:32606",
 # nodata_dem   = -9999,                       
