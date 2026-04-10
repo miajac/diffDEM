@@ -1,40 +1,128 @@
-DEM Differencing toolkit 
+# DEM Differencing Toolkit
 
-What is this repo??
-This repository aims to provide generalized scripts that enable accurate and 
-interpretable differenced digital elevation models (DEMs) from DEMs that have 
-differing grids, pixel sizes, horizontal and vertical coordinate reference 
-systems, and extents. 
-It provides options for adapting this differencing pipeline to local and 
-supercomputer systems and features examples (that include necessary data) 
-that can be used to help users gain confidence working with this repository. 
-This pipeline builds on and utilizes many of the functions created by xdem.
+**Version:** 1.0.0
 
-How??
-This repository contains (or will contain) three major parts.
-#1: A basic script that can be used to difference two DEMs.
-#2: A script similar to #1 but adapted to be run on a supercomputer (like UAF's 
-Chinook), with an accompanying .sh file. 
-#3: An example implementation of both scripts using provided data.
+## What is this repo?
 
-Why??
-The goal of this repository is to create a standard pipeline for differencing 
-DEMs. I created this because I need to difference ~40 DEMs of one general region
-, that have very different coordinate reference systems, extents, and 
-resolutions. While xdem has provided a valueable resource for standardizing this
-process, the DEMs I use required some additional functionality that their
-established pipelines did not have, making this pipeline necessary. 
+This repository provides generalized scripts that enable accurate and interpretable differencing of digital elevation models (DEMs) with:
+- Differing grids and pixel sizes
+- Different horizontal and vertical coordinate reference systems
+- Varying extents
 
+**Future** It includes options for local and supercomputer systems, plus working examples with data to help users gain confidence with the workflow. 
 
-For the purposes of this class (GEOS 694), I have successfully adapted my code 
-into a class format (completing task #1), but because I want to adapt this 
-code so that it can be used on chinook (task #2), I need to also figure out how 
-to effectively parallelize this code (secondary task #1).
+---
 
-Contained files:
-dem_diff.py - This file is made for differencing two DEMs with differing grids, pixel sizes, horizontal coordinate systems, and vertical coordinate systems. Users should know the horizontal and vertical coordinate system of each DEM, as well as the NoData value. 
+## How does it work?
 
-requirements.txt - This file contains the names of required installations for successfully running this script.
+This repository contains (or will contain) three major components:
 
-demDiff.yml - This file can be used to create a local environment that can be used for running the dem_diff.py script.
+### 1. Basic DEM Differencing Script
+A standalone script for differencing two DEMs on a local machine.
 
+### 2. Supercomputer-Adapted Script
+A version optimized for HPC systems (like UAF's Chinook) with accompanying `.sh` batch files.
+
+### 3. Example Implementation
+Working examples using provided data to demonstrate both scripts.
+
+---
+
+## Why create this?
+
+The goal is to establish a **standard pipeline for DEM differencing**. 
+
+I developed this toolkit because I needed to difference ~40 DEMs of one region with vastly different:
+- Coordinate reference systems
+- Spatial extents  
+- Resolutions
+
+While xDEM provides valuable standardization, my workflow required additional functionality not covered by their established pipelines.
+
+**For GEOS 694:** I've successfully adapted this code into a class format (Task #1). Next steps include adapting for Chinook (Task #2) and implementing effective parallelization (Secondary Task #1).
+
+---
+
+## Repository Contents
+
+| File | Description |
+|------|-------------|
+| `dem_diff.py` | Main script for differencing DEMs with different grids, CRS, and formats. Requires users to specify horizontal/vertical CRS and NoData values. |
+| `requirements.txt` | Python package dependencies for running the scripts. |
+| `demDiff.yml` | Conda environment file for creating a local environment. |
+
+---
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/miajac/diffDEM.git
+cd diffDEM
+
+# Create conda environment
+conda env create -f demDiff.yml
+conda activate demDiff
+
+# Or install dependencies manually
+pip install -r requirements.txt
+```
+
+---
+
+## Usage
+
+### Command Line
+
+Edit the parameters at the bottom of `dem_diff.py` in the `if __name__ == "__main__":` block:
+
+```python
+differencer = DEMDifferencer(
+    path_dem1="path/to/dem1.tif",
+    nickname_dem1="DEM1",
+    src_vcrs_dem1="NAVD88",  # or "Ellipsoid", "EGM96", etc. 
+    src_hcrs_dem1="EPSG:3338",
+    nodata_dem1=-9999,
+    path_dem2="path/to/dem2.tif",
+    nickname_dem2="DEM2",
+    src_vcrs_dem2="Ellipsoid",
+    src_hcrs_dem2="EPSG:32606",
+    nodata_dem2=-9999,
+    path_dest="path/to/output/directory",
+    coregister=True,  # Optional: set True for Nuth & Kääb coregistration
+    roi=None  # Optional: provide vector for region of interest
+)
+```
+
+Then run:
+
+```bash
+python dem_diff.py
+```
+
+The differenced DEM will be saved to: `path_dest/nickname_dem2_nickname_dem1.tif`
+
+---
+
+### As a Python Module (Optional)
+
+You can also import and use the class in your own scripts:
+
+```python
+from dem_diff import DEMDifferencer
+
+differencer = DEMDifferencer(
+    path_dem1="path/to/dem1.tif",
+    # ... (same parameters as above)
+)
+differencer.run()
+```
+
+---
+
+## Acknowledgments
+
+This toolkit builds heavily on [xDEM](https://github.com/GlacioHack/xdem), an open-source Python package for analyzing digital elevation models. 
+
+**xDEM citation:**
+> xDEM contributors. (2024). xDEM (v0.1.0). Zenodo. https://doi.org/10.5281/zenodo.11492983
