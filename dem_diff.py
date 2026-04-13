@@ -6,19 +6,22 @@ folder of choice.
 
 To call this file:
 
-    $ python dem_diff.py
+    $ python dem_diff.py config.yml
 
-Must customize run parameters at the bottom of this script. 
+Where config.yml is a parameter file specifying your DEM inputs and options.
+See config_template.yml for a full template, or any of the provided example
+configs (e.g. config_ifsar_lidar.yml, config_arctic.yml)
 
 Credit: Many components of this code are dependent on the xdem functions and 
 examples provided at 
 https://xdem.readthedocs.io/en/stable/basic_examples/plot_dem_subtraction.html.
 
-Requirements: os, sys, geoutils, numpy, xdem, pyproj
+Requirements: os, sys, geoutils, numpy, xdem, pyproj, yaml
 """
 
 import os
 import sys
+import yaml
 import xdem
 import pyproj
 import geoutils as gu
@@ -522,82 +525,57 @@ class DEMDifferencer:
         # self.plot()
         self.save()
 
-# Run
+
+    def load_config(config_path):
+        """Load a YAML config file."""
+        with open(config_path, "r") as f:
+            cfg = yaml.safe_load(f)
+ 
+        required = {
+            "dem1": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
+            "dem2": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
+            "options": ["path_dest"],
+        }
+        for section, fields in required.items():
+            if section not in cfg:
+                raise ValueError(f"Config missing required section: '{section}'")
+            for field in fields:
+                if field not in cfg[section]:
+                    raise ValueError(
+                        f"Config section '{section}' missing required field: '{field}'"
+                    )
+        return cfg
+
+
 if __name__ == "__main__":
-
+ 
+    if len(sys.argv) < 2:
+        print("Usage: python dem_diff.py <config.yml>")
+        print("Example: python dem_diff.py config_ifsar_lidar.yml")
+        sys.exit(1)
+ 
+    config_path = sys.argv[1]
+    if not os.path.exists(config_path):
+        print(f"Error: config file not found: {config_path}")
+        sys.exit(1)
+ 
+    print(f"Loading config: {config_path}")
+    cfg = load_config(config_path)
+ 
     differencer = DEMDifferencer(
-        path_dem1 = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif",
-        nickname_dem1 = "IFSAR_DTM_2010",
-        src_vcrs_dem1 = "NAVD88", # stored as unknown in metadata, known to be 
-                                  # NAVD88 two-step conversion: NAVD88 -> 
-                                  # Ellipsoid -> EGM96, via 
-                                  # us_noaa_geoid09_ak.tif (GEOID09 Alaska).
-        src_hcrs_dem1 = "EPSG:3338", # NAD83 / Alaska Albers 
-        nodata_dem1 = -9999,
-        path_dem2 = "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif", # most recent DEM
-        nickname_dem2 = "Lidar2025",
-        src_vcrs_dem2 = "Ellipsoid",
-        src_hcrs_dem2 = "EPSG:32606",
-        coregister = True,
-        nodata_dem2 = -9999,
-        roi = None,
-        path_dest = "~/REPOS/diffDEMs/differencedDEMs" # file path for differenced DEMs
+        path_dem1     = cfg["dem1"]["path"],
+        nickname_dem1 = cfg["dem1"]["nickname"],
+        src_vcrs_dem1 = cfg["dem1"]["src_vcrs"],
+        src_hcrs_dem1 = cfg["dem1"]["src_hcrs"],
+        nodata_dem1   = cfg["dem1"]["nodata"],
+        path_dem2     = cfg["dem2"]["path"],
+        nickname_dem2 = cfg["dem2"]["nickname"],
+        src_vcrs_dem2 = cfg["dem2"]["src_vcrs"],
+        src_hcrs_dem2 = cfg["dem2"]["src_hcrs"],
+        nodata_dem2   = cfg["dem2"]["nodata"],
+        roi           = cfg["options"].get("roi", None),
+        coregister    = cfg["options"].get("coregister", False),
+        path_dest     = cfg["options"]["path_dest"],
     )
-
+ 
     differencer.run()
-
-## Example parameters for each dem:
-## user must still specify whether each DEM is 1 or 2
-
-## IFSAR DSM:
-# path_dem = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DSM_Summer_2010/IFSAR_DSM_Summer_2010.tif",
-# nickname_dem = "IFSAR_DSM_2010",
-# src_vcrs_dem = "NAVD88", ## stored as unknown in metadata, known to be 
-                           ## NAVD88 two-step conversion: NAVD88 -> 
-                           ## Ellipsoid -> EGM96, via 
-                           ## us_noaa_geoid09_ak.tif (GEOID09 Alaska).
-# src_hcrs_dem = "EPSG:3338", ## NAD83 / Alaska Albers 
-# nodata_dem = -9999,
-# coregister = True,
-
-## IFSAR DTM:
-# path_dem = "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif",
-# nickname_dem = "IFSAR_DTM_2010",
-# src_vcrs_dem = "NAVD88", ## stored as unknown in metadata, known to be 
-                           ## NAVD88 two-step conversion: NAVD88 -> 
-                           ## Ellipsoid -> EGM96, via 
-                           ## us_noaa_geoid09_ak.tif (GEOID09 Alaska).
-# src_hcrs_dem = "EPSG:3338", ## NAD83 / Alaska Albers 
-# nodata_dem = -9999,
-# coregister = True,
-
-## Drone:
-# path_dem = "~/REPOS/diffDEMs/exampleData/Drone_2025Aug13_DEM/Drone_2025Aug13_DEM.tif",
-# nickname_dem = "CanwellDrone08132025",
-# src_vcrs_dem = "Ellipsoid",
-# src_hcrs_dem = "EPSG:32606",
-# nodata_dem = -9999,
-# coregister = False,
-
-## Isabel pass:
-# path_dem = "~/REPOS/diffDEMs/exampleData/Isabel-Horz-Alaska-AEAC/IsabelPass_DSM_2000.tif",
-# nickname_dem = "IsabelIFSAR2000",
-# src_vcrs_dem = "EGM96",
-# src_hcrs_dem = "EPSG:32606",
-# nodata_dem = 0,
-# coregister = True,
-
-## Arctic DEM:
-# path_dem = "~/REPOS/diffDEMs/exampleData/ArcticDEM_20090606_EPSG_4326_most.tif",
-# nickname_dem = "Arctic2009_06_06",
-# src_vcrs_dem = "Ellipsoid",
-# src_hcrs_dem = "EPSG:4326",
-# nodata_dem = -9999,
-# coregister = False,
-
-## 2025 Lidar Survey:
-# path_dem = "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif",
-# nickname_dem = "Lidar2025",
-# src_vcrs_dem = "Ellipsoid",
-# src_hcrs_dem = "EPSG:32606",
-# nodata_dem = -9999,                       
