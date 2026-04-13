@@ -4,6 +4,8 @@
 #
 # Copy this file, rename it (ex. config_myrun.yml), fill in your values,
 # and run.
+#
+# DEM2 should be more recent than DEM1
  
 dem1:
   path: "/path/to/your/first_dem.tif"
