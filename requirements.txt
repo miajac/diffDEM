@@ -2,7 +2,7 @@
 # environment when you are using this repository. 
 # Alternatively, users can use the diffDEM.yml file to directly create 
 # an environment suited for this repository using: conda env create -f
-# diffDEM.yml
+# demDiff.yml
 
 # List of required installations:
 - geoutils
