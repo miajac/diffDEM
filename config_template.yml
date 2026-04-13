@@ -2,8 +2,8 @@
 # Parameter file for dem_diff.py
 # Run with: python dem_diff.py config_template.yml
 #
-# Copy this file, rename it (e.g. config_myrun.yml), fill in your values,
-# and run. Never edit dem_diff.py directly to change inputs.
+# Copy this file, rename it (ex. config_myrun.yml), fill in your values,
+# and run.
  
 dem1:
   path: "/path/to/your/first_dem.tif"
@@ -23,6 +23,10 @@ dem2:
   nodata: -9999 # 
  
 options:
-  path_dest: "/path/to/output/folder/" # trailing slash required
-  roi: null # path to a vector file, or null for no clipping
-  coregister: false # true or false
+  path_dest: "/path/to/output/folder/" # path for the differenced DEM to be 
+                                       # saved to; trailing slash required
+  roi: null # path to a vector file that will be used to define the region of 
+            # coverage for the differenced DEM; select null for no clipping
+  coregister: false # Boolean (true or false) to determine whether or not Nuth 
+                    # and Kabb coregistration should be completed
+  
