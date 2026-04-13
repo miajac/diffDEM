@@ -1,0 +1,28 @@
+# config_template.yml
+# Parameter file for dem_diff.py
+# Run with: python dem_diff.py config_template.yml
+#
+# Copy this file, rename it (e.g. config_myrun.yml), fill in your values,
+# and run. Never edit dem_diff.py directly to change inputs.
+ 
+dem1:
+  path: "/path/to/your/first_dem.tif"
+  nickname: "ShortName1" # used in output filename and print statements
+  src_vcrs: "EGM96" # vertical coordinate reference system for DEM1
+                    # options: "Ellipsoid", "EGM96", "NAVD88", 
+                              # or any valid EPSG code, see https://epsg.io/
+  src_hcrs: "EPSG:4326" # horizontal coordinate reference system for DEM1 
+                        # options: any valid EPSG code, see https://epsg.io/
+  nodata: -9999 # common values: 0, -9999, -3.4028235e+038
+ 
+dem2:
+  path: "/path/to/your/second_dem.tif"
+  nickname: "ShortName2" 
+  src_vcrs: "EPSG:1234" # vertical coordinate reference system for DEM2
+  src_hcrs: "EPSG:12345" # horizontal coordinate reference system for DEM2 
+  nodata: -9999 # 
+ 
+options:
+  path_dest: "/path/to/output/folder/" # trailing slash required
+  roi: null # path to a vector file, or null for no clipping
+  coregister: false # true or false
