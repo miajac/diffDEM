@@ -3,7 +3,7 @@
 # Run with: python dem_diff.py config_ifsar_lidar.yml
 
 dem1:
-  path: "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif"
+  path: "/Users/miajacoombs/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif"
   nickname: "IFSAR_DTM_2010"
   src_vcrs: "NAVD88"    # stored as unknown in metadata, known to be NAVD88
                         # two-step conversion: NAVD88 -> Ellipsoid -> EGM96
@@ -12,13 +12,13 @@ dem1:
   nodata: -9999
 
 dem2:
-  path: "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif"
+  path: "/Users/miajacoombs/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif"
   nickname: "Lidar2025"
   src_vcrs: "Ellipsoid"
   src_hcrs: "EPSG:32606"
   nodata: -9999
 
 options:
-  path_dest: "~/REPOS/diffDEMs/differencedDEMs/"
+  path_dest: "/Users/miajacoombs/REPOS/diffDEMs/differencedDEMs/"
   roi: null
   coregister: true
