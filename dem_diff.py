@@ -544,6 +544,14 @@ class DEMDifferencer:
                     raise ValueError(
                         f"Config section '{section}' missing required field: '{field}'"
                     )
+        
+        # Expand ~ to full home directory path
+        cfg["dem1"]["path"] = os.path.expanduser(cfg["dem1"]["path"])
+        cfg["dem2"]["path"] = os.path.expanduser(cfg["dem2"]["path"])
+        cfg["options"]["path_dest"] = os.path.expanduser(
+            cfg["options"]["path_dest"]
+        )
+
         return cfg
 
 
