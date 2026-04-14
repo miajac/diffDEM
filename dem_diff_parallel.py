@@ -357,11 +357,22 @@ class DEMDifferencerParallel:
         sector_id, y_start, y_end, x_start, x_end = sector_info
 
         try:
-            # Extract sectors from DEM arrays
-            dem1_sector = self.dem1[y_start:y_end, x_start:x_end]
-            dem2_sector = self.dem2[y_start:y_end, x_start:x_end]
+            # Crop sectors using spatial bounds instead of array slicing
+            # so the result stays an xdem.DEM object
+            transform = self.dem1.transform
+            left  = transform.c + x_start * transform.a
+            top   = transform.f + y_start * transform.e
+            right = transform.c + x_end   * transform.a
+            bottom= transform.f + y_end   * transform.e
 
-            # Difference
+            dem1_sector = self.dem1.crop(
+                (left, bottom, right, top), inplace=False
+            )
+            dem2_sector = self.dem2.crop(
+                (left, bottom, right, top), inplace=False
+            )
+
+            # Difference — result is now an xdem.DEM
             diff_sector = dem2_sector - dem1_sector
 
             # Preserve CRS and nodata metadata
@@ -381,6 +392,7 @@ class DEMDifferencerParallel:
             print(f"[Sector {sector_id:05d}] ERROR: {e}")
             raise
 
+        
     def difference_sectors_parallel(self):
         """
         Difference DEMs by splitting into sectors and processing in parallel.
