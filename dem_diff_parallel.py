@@ -443,7 +443,7 @@ class DEMDifferencerParallel:
             profile.pop("blockxsize", None)
             profile.pop("blockysize", None)
 
-            # Write merged result to output directory so it survives temp cleanup
+            # Write merged result to output directory so it survives cleanup
             os.makedirs(self.path_dest, exist_ok=True)
             merged_path = os.path.join(self.path_dest, "merged_temp.tif")
             with rasterio.open(merged_path, "w", **profile) as dst:
@@ -455,8 +455,9 @@ class DEMDifferencerParallel:
 
         # Load back as xdem.DEM to preserve type
         merged_dem = xdem.DEM(merged_path, nodata=self.dem2.nodata)
+        merged_dem.load()         # force data into memory before file deletion
         merged_dem.set_vcrs(self.TARGET_VCRS)
-        os.remove(merged_path)
+        os.remove(merged_path)              
         return merged_dem
 
 
