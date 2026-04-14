@@ -458,10 +458,14 @@ class DEMDifferencerParallel:
                 "height": merged_data.shape[1],
                 "width": merged_data.shape[2],
                 "transform": merged_transform,
+                "tiled": False,
+                "blockxsize": None,
+                "blockysize": None,
             })
 
-            # Write merged result to a temp file, then load as xdem.DEM
-            merged_path = os.path.join(self.temp_dir, "merged.tif")
+            # Write merged result to output directory so it survives temp cleanup
+            os.makedirs(self.path_dest, exist_ok=True)
+            merged_path = os.path.join(self.path_dest, "merged_temp.tif")
             with rasterio.open(merged_path, "w", **profile) as dst:
                 dst.write(merged_data)
 
