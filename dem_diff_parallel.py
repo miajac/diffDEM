@@ -343,49 +343,29 @@ class DEMDifferencerParallel:
         print(f"Sector dimensions: ~{sector_height}x{sector_width} pixels")
         return sectors
 
+
     def _process_sector(self, sector_info):
-        """
-        Process a single sector: extract, difference, save.
-        
-        Parameters:
-        sector_info : tuple
-            (sector_id, y_start, y_end, x_start, x_end)
-        
-        Returns:
-        str : path to temporary sector file
-        """
         sector_id, y_start, y_end, x_start, x_end = sector_info
-
         try:
-            # Crop sectors using spatial bounds instead of array slicing
-            # so the result stays an xdem.DEM object
             transform = self.dem1.transform
-            left  = transform.c + x_start * transform.a
-            top   = transform.f + y_start * transform.e
-            right = transform.c + x_end   * transform.a
-            bottom= transform.f + y_end   * transform.e
+            left   = transform.c + x_start * transform.a
+            top    = transform.f + y_start * transform.e
+            right  = transform.c + x_end   * transform.a
+            bottom = transform.f + y_end   * transform.e
 
-            dem1_sector = self.dem1.crop(
-                (left, bottom, right, top), inplace=False
-            )
-            dem2_sector = self.dem2.crop(
-                (left, bottom, right, top), inplace=False
-            )
+            dem1_sector = self.dem1.crop((left, bottom, right, top), inplace=False)
+            dem2_sector = self.dem2.crop((left, bottom, right, top), inplace=False)
 
-            # Difference — result is now an xdem.DEM
             diff_sector = dem2_sector - dem1_sector
 
-            # Preserve CRS and nodata metadata
-            diff_sector.set_vcrs(self.TARGET_VCRS)
-            diff_sector.nodata = self.dem2.nodata
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                diff_sector.set_vcrs(self.TARGET_VCRS)
+                diff_sector.nodata = self.dem2.nodata
 
-            # Save to temp file with georeferencing
-            temp_path = os.path.join(
-                self.temp_dir, f"sector_{sector_id:05d}.tif"
-            )
+            temp_path = os.path.join(self.temp_dir, f"sector_{sector_id:05d}.tif")
             diff_sector.to_file(temp_path)
-
-            print(f"[Sector {sector_id:05d}] processed and saved to {temp_path}")
             return temp_path
 
         except Exception as e:
@@ -459,9 +439,9 @@ class DEMDifferencerParallel:
                 "width": merged_data.shape[2],
                 "transform": merged_transform,
                 "tiled": False,
-                "blockxsize": None,
-                "blockysize": None,
             })
+            profile.pop("blockxsize", None)
+            profile.pop("blockysize", None)
 
             # Write merged result to output directory so it survives temp cleanup
             os.makedirs(self.path_dest, exist_ok=True)
@@ -476,6 +456,7 @@ class DEMDifferencerParallel:
         # Load back as xdem.DEM to preserve type
         merged_dem = xdem.DEM(merged_path, nodata=self.dem2.nodata)
         merged_dem.set_vcrs(self.TARGET_VCRS)
+        os.remove(merged_path)
         return merged_dem
 
 
