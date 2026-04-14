@@ -392,7 +392,7 @@ class DEMDifferencerParallel:
             print(f"[Sector {sector_id:05d}] ERROR: {e}")
             raise
 
-        
+
     def difference_sectors_parallel(self):
         """
         Difference DEMs by splitting into sectors and processing in parallel.
@@ -438,55 +438,42 @@ class DEMDifferencerParallel:
         mosaicked = self._merge_rasters(sectors_data)
         return mosaicked
 
+
     def _merge_rasters(self, raster_list):
         """
         Merge a list of non-overlapping geoutils Rasters into one.
-        Assumes rasters are georeferenced and non-overlapping.
+        Uses rasterio.merge on the temp sector files directly.
         """
-        # Simple approach: use numpy concatenation with georeferencing
-        # For more robustness, consider rasterio.merge.merge
-        if len(raster_list) == 1:
-            return raster_list[0]
+        
+        import rasterio
+        from rasterio.merge import merge
 
-        # Load data and build merged array
-        # (This is simplified; production code should use rasterio for robustness)
+        # Open all sector files
+        src_files = [rasterio.open(r.filename) for r in raster_list]
+
         try:
-            # Try using rasterio for proper merging
-            import rasterio
-            from rasterio.merge import merge
+            merged_data, merged_transform = merge(src_files)
+            profile = src_files[0].profile.copy()
+            profile.update({
+                "height": merged_data.shape[1],
+                "width": merged_data.shape[2],
+                "transform": merged_transform,
+            })
 
-            with rasterio.open(raster_list[0].filename) as src:
-                profile = src.profile
+            # Write merged result to a temp file, then load as xdem.DEM
+            merged_path = os.path.join(self.temp_dir, "merged.tif")
+            with rasterio.open(merged_path, "w", **profile) as dst:
+                dst.write(merged_data)
 
-            # Merge all raster files
-            merged_data, merged_transform = merge(
-                [r.filename for r in raster_list]
-            )
+        finally:
+            for src in src_files:
+                src.close()
 
-            # Create a new geoutils Raster from merged data
-            merged_raster = gu.Raster(
-                merged_data,
-                transform=merged_transform,
-                crs=raster_list[0].crs,
-                nodata=raster_list[0].nodata,
-            )
-            return merged_raster
+        # Load back as xdem.DEM to preserve type
+        merged_dem = xdem.DEM(merged_path, nodata=self.dem2.nodata)
+        merged_dem.set_vcrs(self.TARGET_VCRS)
+        return merged_dem
 
-        except ImportError:
-            print(
-                "Warning: rasterio not available, using basic concatenation. "
-                "Install rasterio for robust mosaicking."
-            )
-            # Fallback: basic stacking (assumes grid-aligned sectors)
-            # This is a simplified fallback and may not handle edge cases
-            all_data = np.concatenate([r.data for r in raster_list], axis=0)
-            merged_raster = gu.Raster(
-                all_data,
-                transform=raster_list[0].transform,
-                crs=raster_list[0].crs,
-                nodata=raster_list[0].nodata,
-            )
-            return merged_raster
 
     def check_stable_terrain(self):
         """Check elevation differences on flat stable terrain."""
