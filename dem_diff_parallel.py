@@ -1,12 +1,14 @@
 """
-dem_diff_parallel.py — Parallelized DEM differencing with sector-based processing.
+dem_diff_parallel.py
+Parallelized DEM differencing with sector-based processing.
 
 This version parallelizes:
 1. DEM preparation (loading, CRS assignment, vertical conversion, reprojection)
-2. Differencing via sector-based processing (split, difference in parallel, mosaic)
+2. Differencing via sector-based processing (split, difference in parallel, 
+   mosaic)
 
 Usage:
-    $ python dem_diff_parallel.py config.yml [--num-sectors 10] [--workers auto]
+    $ python dem_diff_parallel.py config.yml --num-sectors 10 --workers auto
 
 Where config.yml is a parameter file (same format as dem_diff.py).
 """
@@ -20,6 +22,7 @@ import geoutils as gu
 import numpy as np
 import tempfile
 import shutil
+
 from pyproj.transformer import TransformerGroup
 from multiprocessing import Pool, cpu_count
 from functools import partial
@@ -98,7 +101,8 @@ class DEMDifferencerParallel:
             grid_path = os.path.join(data_dir, self.NAVD88_GRID)
             if os.path.exists(grid_path):
                 print(
-                    f"[grid check] {self.NAVD88_GRID} found locally at {grid_path}"
+                    f"[grid check] {self.NAVD88_GRID} found locally at "
+                    f"{grid_path}"
                 )
             else:
                 print(
