@@ -1,0 +1,58 @@
+# config_batch_template.yml
+# Parameter file for dem_diff_batch.py
+
+# Run with: 
+    # mpirun -n <num_ranks> python dem_diff_batch.py config_batch.yml
+#
+# Copy this file, rename it (ex. config_batch_canwell.yml), fill in your
+# values, and run. Each MPI rank will process a different DEM pair.
+#
+# DEMs should be listed oldest to most recent for meaningful differences.
+
+dems:
+  - path: "/path/to/dem_2010.tif"
+    nickname: "DEM2010"           # used in output filename and print statements
+    src_vcrs: "NAVD88"            # options: "Ellipsoid", "EGM96", "NAVD88",
+                                  # or any valid EPSG code, see https://epsg.io/
+    src_hcrs: "EPSG:3338"         # any valid EPSG code, see https://epsg.io/
+    nodata: -9999
+
+  - path: "/path/to/dem_2015.tif"
+    nickname: "DEM2015"
+    src_vcrs: "EGM96"
+    src_hcrs: "EPSG:32606"
+    nodata: -9999
+
+  - path: "/path/to/dem_2020.tif"
+    nickname: "DEM2020"
+    src_vcrs: "Ellipsoid"
+    src_hcrs: "EPSG:32606"
+    nodata: -9999
+
+  - path: "/path/to/dem_2025.tif"
+    nickname: "DEM2025"
+    src_vcrs: "Ellipsoid"
+    src_hcrs: "EPSG:32606"
+    nodata: -9999
+
+options:
+  path_dest: "/scratch/username/differencedDEMs/"  # trailing slash required
+  roi: null # path to a vector file, or null for no clipping
+
+  coregister: false # global default applied to all pairs unless overridden
+                    # per pair in explicit_pairs below
+
+  # Pair mode — choose one:
+  #   sequential: differences consecutive DEMs in list order
+  #                (DEM2010-DEM2015, DEM2015-DEM2020, DEM2020-DEM2025)
+  #   all: differences every possible combination of DEMs
+  #   explicit: user-defined pairs listed below under explicit_pairs
+  pairs: "sequential"
+
+  # Only used when pairs: "explicit"
+  # Format: [dem1_nickname, dem2_nickname] uses global coregister default
+  #         [dem1_nickname, dem2_nickname, true/false] overrides per pair
+  # explicit_pairs:
+  #   - ["DEM2010", "DEM2025", true] # coregister override: true
+  #   - ["DEM2015", "DEM2025", false] # coregister override: false
+  #   - ["DEM2020", "DEM2025"] # uses global coregister default
