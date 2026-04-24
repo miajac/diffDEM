@@ -1,0 +1,37 @@
+# config_toy.yml
+# Parameter file for dem_diff.py
+# Usage: 
+    # python dem_diff_parallel.py config_toy.yml --num-sectors 4 --workers auto
+#
+# Toy example using cropped DEMs for testing the dem_diff.py script.
+# DEM data covers a small ~200 m x 200 m area of the Canwell Glacier, Alaska.
+#
+# DEM2 should be more recent than DEM1
+
+dem1:
+  path: "exampleData/toy_IFSAR_DTM_2010.tif" # customize filepath here
+  nickname: "IFSAR_DTM_2010"   # used in output filename and print statements
+  src_vcrs: "NAVD88"           # vertical coordinate reference system for DEM1
+                               # options: "Ellipsoid", "EGM96", "NAVD88",
+                               # or any valid EPSG code, see https://epsg.io/
+  src_hcrs: "EPSG:3338"        # horizontal coordinate reference system for DEM1
+                               # options: any valid EPSG code, 
+                               # see https://epsg.io/
+  nodata: -9999                # common values: 0, -9999, -3.4028235e+038
+
+dem2:
+  path: "exampleData/toy_Lidar2025.tif" # customize filepath here
+  nickname: "Lidar2025"
+  src_vcrs: "Ellipsoid"        # vertical coordinate reference system for DEM2
+  src_hcrs: "EPSG:32606"       # horizontal coordinate reference system for DEM2
+  nodata: -9999
+
+options:
+  path_dest: "differencedDEMs/" # path for the differenced DEM to be saved to;
+                                # trailing slash required
+  roi: null                     # path to a vector file that will be used to
+                                # define the region of coverage for the
+                                # differenced DEM; select null for no clipping
+  coregister: true              # Boolean (true or false) to determine whether
+                                # or not Nuth and Kääb coregistration should
+                                # be completed
