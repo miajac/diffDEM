@@ -119,7 +119,7 @@ rename it, and fill in your values:
 dem1:
   path: "/path/to/your/first_dem.tif"
   nickname: "ShortName1"
-  src_vcrs: "EGM96"        # options: "Ellipsoid", "EGM96", "NAVD88"
+  src_vcrs: "EGM96"        # options: "Ellipsoid", "EGM96", "NAVD88", valid EPSG code
   src_hcrs: "EPSG:4326"    # any valid EPSG code, see https://epsg.io/
   nodata: -9999
 
