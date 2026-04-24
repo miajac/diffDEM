@@ -9,3 +9,4 @@
 - numpy
 - xdem
 - pyproj
+- pyyaml
