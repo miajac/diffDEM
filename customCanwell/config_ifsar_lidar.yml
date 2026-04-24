@@ -1,0 +1,24 @@
+# config_ifsar_lidar.yml
+# Parameter file for dem_diff.py: IFSAR DTM 2010 vs Lidar 2025
+# Run with: python dem_diff.py config_ifsar_lidar.yml
+
+dem1:
+  path: "/Users/miajacoombs/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif"
+  nickname: "IFSAR_DTM_2010"
+  src_vcrs: "NAVD88"    # stored as unknown in metadata, known to be NAVD88
+                        # two-step conversion: NAVD88 -> Ellipsoid -> EGM96
+                        # via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
+  src_hcrs: "EPSG:3338" # NAD83 / Alaska Albers
+  nodata: -9999
+
+dem2:
+  path: "/Users/miajacoombs/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif"
+  nickname: "Lidar2025"
+  src_vcrs: "Ellipsoid"
+  src_hcrs: "EPSG:32606"
+  nodata: -9999
+
+options:
+  path_dest: "/Users/miajacoombs/REPOS/diffDEMs/differencedDEMs/"
+  roi: null
+  coregister: true

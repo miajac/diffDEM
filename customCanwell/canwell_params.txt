@@ -1,0 +1,46 @@
+Examples of parameters for imagery of Canwell Glacier
+Order: newest first
+
+dem#:
+  path: "~/REPOS/diffDEMs/exampleData/Canwell_4Aug25_DTM.tif"
+  nickname: "Lidar2025"
+  src_vcrs: "Ellipsoid"
+  src_hcrs: "EPSG:32606"
+  nodata: -9999
+
+dem#:
+  path: "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DTM_Summer_2010/IFSAR_DTM_Summer_2010.tif"
+  nickname: "IFSAR_DTM_2010"
+  src_vcrs: "NAVD88"    # stored as unknown in metadata, known to be NAVD88
+                        # two-step conversion: NAVD88 -> Ellipsoid -> EGM96
+                        # via us_noaa_geoid09_ak.tif (GEOID09 Alaska)
+  src_hcrs: "EPSG:3338" # NAD83 / Alaska Albers
+  nodata: -9999
+
+dem#:
+    path: "~/REPOS/diffDEMs/exampleData/IFSAR-Horz-AlbersConicalEqualArea/IFSAR_DSM_Summer_2010/IFSAR_DSM_Summer_2010.tif"
+    nickname: "IFSAR_DSM_2010"
+    src_vcrs: "NAVD88"
+    src_hcrs: "EPSG:3338" ## NAD83 / Alaska Albers 
+    nodata: -9999
+
+dem#:
+    path: "~/REPOS/diffDEMs/exampleData/Drone_2025Aug13_DEM/Drone_2025Aug13_DEM.tif"
+    nickname: "CanwellDrone08132025"
+    src_vcrs: "Ellipsoid"
+    src_hcrs: "EPSG:32606"
+    nodata: -9999
+
+dem#:
+    path: "~/REPOS/diffDEMs/exampleData/Isabel-Horz-Alaska-AEAC/IsabelPass_DSM_2000.tif"
+    nickname: "IsabelIFSAR2000"
+    src_vcrs: "EGM96"
+    src_hcrs: "EPSG:32606"
+    nodata: 0
+
+dem#:
+    path: "~/REPOS/diffDEMs/exampleData/ArcticDEM_20090606_EPSG_4326_most.tif"
+    nickname: "Arctic2009_06_06"
+    src_vcrs: "Ellipsoid"
+    src_hcrs: "EPSG:4326"
+    nodata: -9999
