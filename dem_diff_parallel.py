@@ -22,6 +22,7 @@ import geoutils as gu
 import numpy as np
 import tempfile
 import shutil
+import argparse
 
 from pyproj.transformer import TransformerGroup
 from multiprocessing import Pool, cpu_count
@@ -498,10 +499,12 @@ class DEMDifferencerParallel:
                 f"consistent."
             )
 
+
     def save(self):
         """Save the differenced DEM to the output path."""
         self.diff_dem.to_file(self.output_path)
         print(f"\nDifferenced DEM saved to: {self.output_path}")
+
 
     def run(self):
         """Run the full parallelized pipeline."""
@@ -528,12 +531,12 @@ def load_config(config_path):
     }
     for section, fields in required.items():
         if section not in cfg:
-            raise ValueError(f"Config missing required section: '{section}'")
+            raise ValueError(f"Config missing required section: "{section}"")
         for field in fields:
             if field not in cfg[section]:
                 raise ValueError(
-                    f"Config section '{section}' missing required field: "
-                    f"'{field}'"
+                    f"Config section "{section}" missing required field: "
+                    f""{field}""
                 )
     # Expand ~ to full home directory path
     cfg["dem1"]["path"] = os.path.expanduser(cfg["dem1"]["path"])
@@ -546,7 +549,6 @@ def load_config(config_path):
 
 
 if __name__ == "__main__":
-    import argparse
 
     parser = argparse.ArgumentParser(
         description="Parallelized DEM differencing with sector-based processing"
