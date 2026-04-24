@@ -550,6 +550,7 @@ def load_config(config_path):
 
 if __name__ == "__main__":
 
+    # Command-line argument parsing
     parser = argparse.ArgumentParser(
         description="Parallelized DEM differencing with sector-based processing"
     )
