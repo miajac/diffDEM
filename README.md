@@ -88,6 +88,7 @@ While xDEM provides valuable standardization, my workflow required additional fu
 | `demDiff.yml` | Conda environment file for creating a local environment. |
 | `requirements.txt` | Python package dependencies for running the scripts. |
 | `exampleData/` | Contains two cropped toy DEMs for testing (`toy_IFSAR_DTM_2010.tif`, `toy_Lidar2025.tif`). |
+| `customCanwell/` | Example config and parameter files for a real Canwell Glacier run. Useful as a reference for setting up your own config files. |
 
 ---
 
