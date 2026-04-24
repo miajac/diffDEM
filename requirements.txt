@@ -10,3 +10,4 @@
 - xdem
 - pyproj
 - pyyaml
+- mpi4py
