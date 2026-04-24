@@ -1,6 +1,0 @@
-*.tif
-*.tiff
-*.xml
-.DS_Store
-.venv/
-exampleData/
