@@ -531,12 +531,11 @@ def load_config(config_path):
     }
     for section, fields in required.items():
         if section not in cfg:
-            raise ValueError(f"Config missing required section: "{section}"")
+            raise ValueError(f"Config missing required section: '{section}'")
         for field in fields:
             if field not in cfg[section]:
                 raise ValueError(
-                    f"Config section "{section}" missing required field: "
-                    f""{field}""
+                    f"Config section '{section}' missing required field: '{field}'"
                 )
     # Expand ~ to full home directory path
     cfg["dem1"]["path"] = os.path.expanduser(cfg["dem1"]["path"])
