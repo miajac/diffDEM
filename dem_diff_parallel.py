@@ -45,6 +45,7 @@ class DEMDifferencerParallel:
     TARGET_VCRS = "EGM96"
     NAVD88_GRID = "us_noaa_geoid09_ak.tif"
 
+
     def __init__(
         self,
         path_dem1,
@@ -90,6 +91,7 @@ class DEMDifferencerParallel:
         self.dem2 = None
         self.diff_dem = None
 
+
     def _check_grids(self):
         """Verify that required projection grid files are available."""
         needs_navd88 = any(
@@ -130,6 +132,7 @@ class DEMDifferencerParallel:
                         f"{self.NAVD88_GRID} and place in {data_dir}."
                     ) from e
 
+
     def load(self):
         """Load both DEMs from file."""
         self.dem1 = xdem.DEM(self.path_dem1, nodata=self.nodata_dem1)
@@ -158,6 +161,7 @@ class DEMDifferencerParallel:
         self.dem1.info()
         print(f"{self.nickname_dem2} raster info:")
         self.dem2.info()
+
 
     def _prepare_dem(self, dem, src_hcrs, src_vcrs, nodata, nickname, src_path):
         """Prepare a single DEM (CRS assignment, vertical conversion, reprojection)."""
@@ -216,6 +220,7 @@ class DEMDifferencerParallel:
         print(f"[{nickname}] source file: {source_info}")
         return dem
 
+
     def prepare_parallel(self):
         """Parallelize preparation of both DEMs using multiprocessing."""
         print("\nPreparing DEMs in parallel:")
@@ -249,6 +254,7 @@ class DEMDifferencerParallel:
         self.dem1.info()
         print(f"{self.nickname_dem2}:")
         self.dem2.info()
+
 
     def align(self):
         """Align DEMs to a common grid."""
@@ -292,6 +298,7 @@ class DEMDifferencerParallel:
         print(f"{self.nickname_dem2}:")
         self.dem2.info()
 
+
     def _coregister(self):
         """Apply Nuth & Kääb coregistration."""
         print("\nCoregistering DEMs (Nuth & Kääb)...")
@@ -324,6 +331,7 @@ class DEMDifferencerParallel:
         print(f"{self.nickname_dem1}:")
         self.dem1.info()
 
+
     def _define_sectors(self):
         """
         Define sectors based on pixel indices.
@@ -344,7 +352,8 @@ class DEMDifferencerParallel:
                 sectors.append((sector_id, y_start, y_end, x_start, x_end))
                 sector_id += 1
 
-        print(f"\nDefined {len(sectors)} sectors ({self.num_sectors}x{self.num_sectors})")
+        print(f"\nDefined {len(sectors)} sectors" 
+              f"({self.num_sectors}x{self.num_sectors})")
         print(f"Sector dimensions: ~{sector_height}x{sector_width} pixels")
         return sectors
 
@@ -358,8 +367,10 @@ class DEMDifferencerParallel:
             right  = transform.c + x_end   * transform.a
             bottom = transform.f + y_end   * transform.e
 
-            dem1_sector = self.dem1.crop((left, bottom, right, top), inplace=False)
-            dem2_sector = self.dem2.crop((left, bottom, right, top), inplace=False)
+            dem1_sector = self.dem1.crop((left, bottom, right, top), 
+                                         inplace=False)
+            dem2_sector = self.dem2.crop((left, bottom, right, top), 
+                                         inplace=False)
 
             diff_sector = dem2_sector - dem1_sector
 
@@ -369,7 +380,8 @@ class DEMDifferencerParallel:
                 diff_sector.set_vcrs(self.TARGET_VCRS)
                 diff_sector.nodata = self.dem2.nodata
 
-            temp_path = os.path.join(self.temp_dir, f"sector_{sector_id:05d}.tif")
+            temp_path = os.path.join(self.temp_dir, 
+                                     f"sector_{sector_id:05d}.tif")
             diff_sector.to_file(temp_path)
             return temp_path
 
@@ -392,7 +404,8 @@ class DEMDifferencerParallel:
         sectors = self._define_sectors()
 
         # Process sectors in parallel
-        print(f"Processing {len(sectors)} sectors with {self.num_workers} workers...")
+        print(f"Processing {len(sectors)} sectors with "
+              f"{self.num_workers} workers...")
         with Pool(processes=self.num_workers) as pool:
             sector_files = pool.map(self._process_sector, sectors)
 
@@ -406,6 +419,7 @@ class DEMDifferencerParallel:
         # Clean up temp directory
         shutil.rmtree(self.temp_dir)
         print(f"Cleaned up temp directory: {self.temp_dir}")
+
 
     def _mosaic_sectors(self, sector_files):
         """
