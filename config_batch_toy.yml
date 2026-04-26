@@ -1,0 +1,48 @@
+# config_batch_toy.yml
+# Parameter file for example datasets to be run with dem_diff_batch.py
+
+# Run with: 
+    # sbatch dem_diff_batch.sh
+
+# DEMs should be listed oldest to most recent for meaningful differences.
+
+dems:
+  - path: "/exampleData/toy_ArcticDEM_2009.tif"
+    nickname: "ArcticDEM2009_toy"
+    src_vcrs: "Ellipsoid"
+    src_hcrs: "EPSG:4326"
+    nodata: -9999
+
+  - path: "/exampleData/toy_IFSAR_DTM_2010.tif"
+    nickname: "IFSAR2010_toy"           # used in output filename and print statements
+    src_vcrs: "NAVD88"            # options: "Ellipsoid", "EGM96", "NAVD88",
+                                  # or any valid EPSG code, see https://epsg.io/
+    src_hcrs: "EPSG:3338"         # any valid EPSG code, see https://epsg.io/
+    nodata: -9999
+
+  - path: "/exampleData/toy_Lidar2025.tif"
+    nickname: "Lidar2025_toy"
+    src_vcrs: "Ellipsoid"
+    src_hcrs: "EPSG:32606"
+    nodata: -9999
+
+options:
+  path_dest: "/home/mcoombs2/diffDEM/"  # trailing slash required
+  roi: null # path to a vector file, or null for no clipping
+
+  coregister: false # global default applied to all pairs unless overridden
+                    # per pair in explicit_pairs below
+
+  # Pair mode — choose one:
+  #   sequential: differences consecutive DEMs in list order
+  #   all: differences every possible combination of DEMs
+  #   explicit: user-defined pairs listed below under explicit_pairs
+  pairs: "sequential"
+
+  # Only used when pairs: "explicit"
+  # Format: [dem1_nickname, dem2_nickname] uses global coregister default
+  #         [dem1_nickname, dem2_nickname, true/false] overrides per pair
+  # explicit_pairs:
+  #   - ["ArcticDEM2009_toy", "IFSAR2010_toy", true] # coregister override: true
+  #   - ["ArcticDEM2009_toy", "Lidar2025_toy", false] # coregister override: false
+  #   - ["IFSAR2010_toy", "Lidar2025_toy", true] # uses global coregister default
