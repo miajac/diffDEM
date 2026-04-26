@@ -69,6 +69,7 @@ class DEMDifferencerBatch:
     TARGET_VCRS = "EGM96"
     NAVD88_GRID = "us_noaa_geoid09_ak.tif"
 
+
     def __init__(
         self, dems, pairs, path_dest, coregister_default=False, roi=None
     ):
@@ -82,6 +83,7 @@ class DEMDifferencerBatch:
         self.comm = MPI.COMM_WORLD
         self.task = self.comm.Get_rank()
         self.num_tasks = self.comm.Get_size()
+
 
     def _check_grids(self, vcrs_list):
         """Verify NAVD88 grid is available if needed."""
@@ -110,6 +112,7 @@ class DEMDifferencerBatch:
                     f"[Task {self.task}] {self.NAVD88_GRID} found at "
                     f"{grid_path}"
                 )
+
 
     def _prepare_dem(self, dem, src_hcrs, src_vcrs, nodata, nickname):
         """Prepare a single DEM: dtype, CRS, vertical datum, reproject."""
@@ -148,6 +151,7 @@ class DEMDifferencerBatch:
 
         dem.set_vcrs(self.TARGET_VCRS)
         return dem
+
 
     def _process_pair(self, dem1_cfg, dem2_cfg, coregister):
         """
@@ -250,6 +254,7 @@ class DEMDifferencerBatch:
         diff_dem.to_file(output_path)
         print(f"[Task {self.task}] Saved: {output_path}")
         return output_path
+
 
     def run(self):
         """
