@@ -15,14 +15,10 @@ Usage:
     DEMs and specifies how to pair them. See config_batch_template.yml for a
     full template.
 
-
-Where config_batch.yml lists all DEMs and specifies how to pair them.
-See config_batch_template.yml for a full template.
-
-Requirements: demDiff environment and a supercomputer with MPI support.
+Requirements: demDiff environment and a supercomputer with MPI and SLURM enabled
 
 Pair modes:
-    sequential: differences consecutive DEMs (e.g. DEM1-DEM2, DEM2-DEM3)
+    sequential: differences consecutive DEMs (ex. DEM1-DEM2, DEM2-DEM3)
     all: differences every possible combination
     explicit: user-defined list of pairs by nickname, with optional per-pair 
               coregister override
