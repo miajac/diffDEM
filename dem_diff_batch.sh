@@ -17,4 +17,4 @@ conda activate demDiff
 
 # Run the batch differencing script
 # Config file contains all DEM paths, pairs mode, and options
-mpirun python dem_diff_batch.py config_batch_canwell.yml
+mpirun python dem_diff_batch.py config_batch_toy.yml
