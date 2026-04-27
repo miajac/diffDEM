@@ -117,12 +117,9 @@ class DEMDifferencer:
         self.roi = roi
         self.coregister = coregister
 
-        # File path for differenced DEM to be saved to
-        OUTPUT_DIR = self.path_dest
-
         # Differenced DEM output path
         self.output_path = (
-            f"{self.OUTPUT_DIR}{self.nickname_dem2}_{self.nickname_dem1}.tif"
+            f"{self.path_dest}{self.nickname_dem2}_{self.nickname_dem1}.tif"
         )
 
         # Placeholders for processed DEMs and output
@@ -526,33 +523,33 @@ class DEMDifferencer:
         self.save()
 
 
-    def load_config(config_path):
-        """Load a YAML config file."""
-        with open(config_path, "r") as f:
-            cfg = yaml.safe_load(f)
- 
-        required = {
-            "dem1": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
-            "dem2": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
-            "options": ["path_dest"],
-        }
-        for section, fields in required.items():
-            if section not in cfg:
-                raise ValueError(f"Config missing required section: '{section}'")
-            for field in fields:
-                if field not in cfg[section]:
-                    raise ValueError(
-                        f"Config section '{section}' missing required field: '{field}'"
-                    )
-        
-        # Expand ~ to full home directory path
-        cfg["dem1"]["path"] = os.path.expanduser(cfg["dem1"]["path"])
-        cfg["dem2"]["path"] = os.path.expanduser(cfg["dem2"]["path"])
-        cfg["options"]["path_dest"] = os.path.expanduser(
-            cfg["options"]["path_dest"]
-        )
+def load_config(config_path):
+    """Load a YAML config file."""
+    with open(config_path, "r") as f:
+        cfg = yaml.safe_load(f)
 
-        return cfg
+    required = {
+        "dem1": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
+        "dem2": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
+        "options": ["path_dest"],
+    }
+    for section, fields in required.items():
+        if section not in cfg:
+            raise ValueError(f"Config missing required section: '{section}'")
+        for field in fields:
+            if field not in cfg[section]:
+                raise ValueError(
+                    f"Config section '{section}' missing required field: '{field}'"
+                )
+    
+    # Expand ~ to full home directory path
+    cfg["dem1"]["path"] = os.path.expanduser(cfg["dem1"]["path"])
+    cfg["dem2"]["path"] = os.path.expanduser(cfg["dem2"]["path"])
+    cfg["options"]["path_dest"] = os.path.expanduser(
+        cfg["options"]["path_dest"]
+    )
+
+    return cfg
 
 
 if __name__ == "__main__":
