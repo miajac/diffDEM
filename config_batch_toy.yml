@@ -7,26 +7,26 @@
 # DEMs should be listed oldest to most recent for meaningful differences.
 
 dems:
-  - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_IsabelIFSAR_2000.tif"
+  - path: "~/diffDEM/exampleData/toy_IsabelIFSAR_2000.tif"
     nickname: "Isabel2000_toy"
     src_vcrs: "EGM96"
     src_hcrs: "EPSG:32606"
     nodata: 0
 
-  - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_IFSAR_DTM_2010.tif"
+  - path: "~/diffDEM/exampleData/toy_IFSAR_DTM_2010.tif"
     nickname: "IFSAR2010_toy"
     src_vcrs: "NAVD88"
     src_hcrs: "EPSG:3338"
     nodata: -9999
 
-  - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_Lidar2025.tif"
+  - path: "~/diffDEM/exampleData/toy_Lidar2025.tif"
     nickname: "Lidar2025_toy"
     src_vcrs: "Ellipsoid"
     src_hcrs: "EPSG:32606"
     nodata: -9999
 
 options:
-  path_dest: "/home/mcoombs2/diffDEM/"  # trailing slash required
+  path_dest: "~/diffDEM/"  # trailing slash required
   roi: null # path to a vector file, or null for no clipping
 
   coregister: false # global default applied to all pairs unless overridden
