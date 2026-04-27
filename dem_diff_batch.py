@@ -41,6 +41,36 @@ except ImportError:
     MPI_AVAILABLE = False
 
 
+def load_config(config_path):
+    """Load and validate a batch YAML config file."""
+    with open(config_path, "r") as f:
+        cfg = yaml.safe_load(f)
+
+    if "dems" not in cfg or not cfg["dems"]:
+        raise ValueError("Config missing required 'dems' list.")
+    if "options" not in cfg:
+        raise ValueError("Config missing required 'options' section.")
+    if "path_dest" not in cfg["options"]:
+        raise ValueError(
+            "Config 'options' missing required field: 'path_dest'."
+        )
+
+    required_dem_fields = ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"]
+    for i, dem in enumerate(cfg["dems"]):
+        for field in required_dem_fields:
+            if field not in dem:
+                raise ValueError(
+                    f"DEM entry {i} missing required field: '{field}'"
+                )
+        dem["path"] = os.path.expanduser(dem["path"])
+
+    cfg["options"]["path_dest"] = os.path.expanduser(
+        cfg["options"]["path_dest"]
+    )
+
+    return cfg
+
+
 class DEMDifferencerBatch:
     """
     Batch DEM differencer that distributes pairs across tasks.
@@ -381,36 +411,6 @@ def build_pairs(dems, pair_mode, coregister_default, explicit_pairs=None):
             f"Unknown pair_mode '{pair_mode}'. "
             f"Choose from: 'sequential', 'all', 'explicit'."
         )
-
-
-def load_config(config_path):
-    """Load and validate a batch YAML config file."""
-    with open(config_path, "r") as f:
-        cfg = yaml.safe_load(f)
-
-    if "dems" not in cfg or not cfg["dems"]:
-        raise ValueError("Config missing required 'dems' list.")
-    if "options" not in cfg:
-        raise ValueError("Config missing required 'options' section.")
-    if "path_dest" not in cfg["options"]:
-        raise ValueError(
-            "Config 'options' missing required field: 'path_dest'."
-        )
-
-    required_dem_fields = ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"]
-    for i, dem in enumerate(cfg["dems"]):
-        for field in required_dem_fields:
-            if field not in dem:
-                raise ValueError(
-                    f"DEM entry {i} missing required field: '{field}'"
-                )
-        dem["path"] = os.path.expanduser(dem["path"])
-
-    cfg["options"]["path_dest"] = os.path.expanduser(
-        cfg["options"]["path_dest"]
-    )
-
-    return cfg
 
 
 if __name__ == "__main__":
