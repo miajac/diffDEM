@@ -197,7 +197,8 @@ Uses `toy_IFSAR_DTM_2010.tif` and `toy_Lidar2025.tif` (two DEMs of Canwell Glaci
 python dem_diff.py config_toy.yml
 
 # Parallel script
-python dem_diff_parallel.py config_toy.yml --num-sectors 4 --workers auto
+# add --workers auto at the end if you'd like to specify 
+python dem_diff_parallel.py config_toy.yml --num-sectors 4 
 ```
 
 ### Batch Script (Three-DEM Toy Example)
