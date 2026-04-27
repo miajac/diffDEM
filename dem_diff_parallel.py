@@ -19,13 +19,10 @@ import yaml
 import xdem
 import pyproj
 import geoutils as gu
-import rasterio
 import numpy as np
 import tempfile
 import shutil
 import argparse
-
-        
 
 from pyproj.transformer import TransformerGroup
 from multiprocessing import Pool, cpu_count
