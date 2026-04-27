@@ -7,11 +7,11 @@
 # DEMs should be listed oldest to most recent for meaningful differences.
 
 dems:
-  - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_ArcticDEM_2009.tif"
-    nickname: "ArcticDEM2009_toy"
-    src_vcrs: "Ellipsoid"
-    src_hcrs: "EPSG:4326"
-    nodata: -9999
+  - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_IsabelIFSAR_2000.tif"
+    nickname: "Isabel2000_toy"
+    src_vcrs: "EGM96"
+    src_hcrs: "EPSG:32606"
+    nodata: 0
 
   - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_IFSAR_DTM_2010.tif"
     nickname: "IFSAR2010_toy"
