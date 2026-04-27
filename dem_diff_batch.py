@@ -119,9 +119,6 @@ class DEMDifferencerBatch:
     def _check_grids(self, vcrs_list):
         """
         Verify NAVD88 grid is available in the PROJ data directory.
-        If not found, attempts to download automatically from cdn.proj.org.
-        The grid is stored in the conda environment at:
-        <env>/share/proj/us_noaa_geoid09_ak.tif
         """
         needs_navd88 = any(
             vcrs in ("NAVD88", "EPSG:5703") for vcrs in vcrs_list
