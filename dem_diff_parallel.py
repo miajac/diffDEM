@@ -23,6 +23,7 @@ import numpy as np
 import tempfile
 import shutil
 import argparse
+import rasterio
 
 from pyproj.transformer import TransformerGroup
 from multiprocessing import Pool, cpu_count
@@ -64,9 +65,9 @@ class DEMDifferencerParallel:
     Parallelized DEM differencer with sector-based processing.
     
     Parameters: (same as DEMDifferencer, plus additional parallelization params)
-    num_sectors : int, optional
+    num_sectors: int, optional
         Number of sectors along each axis (default 10 → 10x10=100 sectors).
-    num_workers : int, optional
+    num_workers: int, optional
         Number of worker processes (default: cpu_count()).
     """
 
@@ -193,7 +194,8 @@ class DEMDifferencerParallel:
 
 
     def _prepare_dem(self, dem, src_hcrs, src_vcrs, nodata, nickname, src_path):
-        """Prepare a single DEM (CRS assignment, vertical conversion, reprojection)."""
+        """Prepare a single DEM (CRS assignment, vertical conversion, 
+        reprojection)."""
         if dem.data.dtype in [np.uint8, np.uint16, np.uint32]:
             print(
                 f"[{nickname}] converting dtype {dem.data.dtype} -> float32 to "
@@ -230,7 +232,7 @@ class DEMDifferencerParallel:
             print(f"[{nickname}] nodata already correct: {nodata}, skipping")
 
         if dem.crs.to_epsg() != int(self.TARGET_HCRS.split(":")[1]):
-            dem = dem.reproject(crs=self.TARGET_HCRS, resampling="bilinear")
+            dem = dem.reproject(crs = self.TARGET_HCRS, resampling="bilinear")
             print(
                 f"[{nickname}] hCRS reprojected: {src_hcrs} -> {self.TARGET_HCRS}"
             )
@@ -479,7 +481,7 @@ class DEMDifferencerParallel:
         print("\nDifferencing DEMs via parallel sector processing:")
 
         # Create temp directory
-        self.temp_dir = tempfile.mkdtemp(prefix="dem_diff_sectors_")
+        self.temp_dir = tempfile.mkdtemp(prefix = "dem_diff_sectors_")
         print(f"Created temp directory: {self.temp_dir}")
 
         # Define sectors
@@ -488,7 +490,7 @@ class DEMDifferencerParallel:
         # Process sectors in parallel
         print(f"Processing {len(sectors)} sectors with "
               f"{self.num_workers} workers...")
-        with Pool(processes=self.num_workers) as pool:
+        with Pool(processes = self.num_workers) as pool:
             sector_files = pool.map(self._process_sector, sectors)
 
         print(f"\nAll {len(sector_files)} sectors processed successfully")
@@ -560,20 +562,20 @@ if __name__ == "__main__":
 
     # Command-line argument parsing
     parser = argparse.ArgumentParser(
-        description="Parallelized DEM differencing with sector-based processing"
+        description = "Parallelized DEM differencing with sector-based processing"
     )
-    parser.add_argument("config", help="Path to config YAML file")
+    parser.add_argument("config", help = "Path to config YAML file")
     parser.add_argument(
         "--num-sectors",
-        type=int,
-        default=10,
-        help="Number of sectors per axis (default: 10 → 10x10 grid)",
+        type = int,
+        default = 10,
+        help = "Number of sectors per axis (default: 10 → 10x10 grid)",
     )
     parser.add_argument(
         "--workers",
-        type=int,
-        default=None,
-        help="Number of worker processes (default: auto-detect CPU count)",
+        type = int,
+        default = None,
+        help = "Number of worker processes (default: auto-detect CPU count)",
     )
 
     args = parser.parse_args()
@@ -587,21 +589,21 @@ if __name__ == "__main__":
     cfg = load_config(config_path)
 
     differencer = DEMDifferencerParallel(
-        path_dem1=cfg["dem1"]["path"],
-        nickname_dem1=cfg["dem1"]["nickname"],
-        src_vcrs_dem1=cfg["dem1"]["src_vcrs"],
-        src_hcrs_dem1=cfg["dem1"]["src_hcrs"],
-        nodata_dem1=cfg["dem1"]["nodata"],
-        path_dem2=cfg["dem2"]["path"],
-        nickname_dem2=cfg["dem2"]["nickname"],
-        src_vcrs_dem2=cfg["dem2"]["src_vcrs"],
-        src_hcrs_dem2=cfg["dem2"]["src_hcrs"],
-        nodata_dem2=cfg["dem2"]["nodata"],
-        roi=cfg["options"].get("roi", None),
-        coregister=cfg["options"].get("coregister", False),
-        num_sectors=args.num_sectors,
-        num_workers=args.workers,
-        path_dest=cfg["options"]["path_dest"],
+        path_dem1 = cfg["dem1"]["path"],
+        nickname_dem1 = cfg["dem1"]["nickname"],
+        src_vcrs_dem1 = cfg["dem1"]["src_vcrs"],
+        src_hcrs_dem1 = cfg["dem1"]["src_hcrs"],
+        nodata_dem1 = cfg["dem1"]["nodata"],
+        path_dem2 = cfg["dem2"]["path"],
+        nickname_dem2 = cfg["dem2"]["nickname"],
+        src_vcrs_dem2 = cfg["dem2"]["src_vcrs"],
+        src_hcrs_dem2 = cfg["dem2"]["src_hcrs"],
+        nodata_dem2 = cfg["dem2"]["nodata"],
+        roi = cfg["options"].get("roi", None),
+        coregister = cfg["options"].get("coregister", False),
+        num_sectors = args.num_sectors,
+        num_workers = args.workers,
+        path_dest = cfg["options"]["path_dest"],
     )
 
     differencer.run()
