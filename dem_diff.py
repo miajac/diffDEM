@@ -29,6 +29,36 @@ import numpy as np
 
 from pyproj.transformer import TransformerGroup
 
+
+def load_config(config_path):
+    """Load a YAML config file."""
+    with open(config_path, "r") as f:
+        cfg = yaml.safe_load(f)
+
+    required = {
+        "dem1": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
+        "dem2": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
+        "options": ["path_dest"],
+    }
+    for section, fields in required.items():
+        if section not in cfg:
+            raise ValueError(f"Config missing required section: '{section}'")
+        for field in fields:
+            if field not in cfg[section]:
+                raise ValueError(
+                    f"Config section '{section}' missing required field: '{field}'"
+                )
+    
+    # Expand ~ to full home directory path
+    cfg["dem1"]["path"] = os.path.expanduser(cfg["dem1"]["path"])
+    cfg["dem2"]["path"] = os.path.expanduser(cfg["dem2"]["path"])
+    cfg["options"]["path_dest"] = os.path.expanduser(
+        cfg["options"]["path_dest"]
+    )
+
+    return cfg
+
+
 class DEMDifferencer:
     """
     A class to difference two DEMs that may have differing grids, pixel sizes,
@@ -521,35 +551,6 @@ class DEMDifferencer:
         self.check_stable_terrain()
         # self.plot()
         self.save()
-
-
-def load_config(config_path):
-    """Load a YAML config file."""
-    with open(config_path, "r") as f:
-        cfg = yaml.safe_load(f)
-
-    required = {
-        "dem1": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
-        "dem2": ["path", "nickname", "src_vcrs", "src_hcrs", "nodata"],
-        "options": ["path_dest"],
-    }
-    for section, fields in required.items():
-        if section not in cfg:
-            raise ValueError(f"Config missing required section: '{section}'")
-        for field in fields:
-            if field not in cfg[section]:
-                raise ValueError(
-                    f"Config section '{section}' missing required field: '{field}'"
-                )
-    
-    # Expand ~ to full home directory path
-    cfg["dem1"]["path"] = os.path.expanduser(cfg["dem1"]["path"])
-    cfg["dem2"]["path"] = os.path.expanduser(cfg["dem2"]["path"])
-    cfg["options"]["path_dest"] = os.path.expanduser(
-        cfg["options"]["path_dest"]
-    )
-
-    return cfg
 
 
 if __name__ == "__main__":
