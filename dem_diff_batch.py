@@ -276,11 +276,11 @@ class DEMDifferencerBatch:
             for i in range(total_pairs)
             if i % self.num_tasks == self.task
         ]
-
+        
+        # Don't know how to break this into multiple lines without losing readability, so leaving as is:
         print(
             f"\n[Task {self.task}] assigned {len(my_pairs)} pair(s): "
-            f"{[self.pairs[i][1]['nickname'] + '-' + 
-                self.pairs[i][0]['nickname'] for i, _ in my_pairs]}"
+            f"{[self.pairs[i][1]['nickname'] + '-' + self.pairs[i][0]['nickname'] for i, _ in my_pairs]}"
         )
 
         # Process assigned pairs
