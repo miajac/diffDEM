@@ -222,10 +222,10 @@ class DEMDifferencer:
 
         Parameters:
 
-        dem      : xdem.DEM
+        dem : xdem.DEM
         src_hcrs : str
         src_vcrs : str
-        nodata   : float
+        nodata : float
         nickname : str
         src_path : str
 
