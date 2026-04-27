@@ -67,7 +67,7 @@ making them a realistic test of the full pipeline. Run the toy example with:
 ```bash
 python dem_diff.py config_toy.yml
 # or
-python dem_diff_parallel.py config_toy.yml --num-sectors 4 --workers auto
+python dem_diff_parallel.py config_toy.yml --num-sectors 4 
 # or on a supercomputer
 sbatch dem_diff_batch.sh
 ```
