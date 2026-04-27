@@ -7,20 +7,19 @@
 # DEMs should be listed oldest to most recent for meaningful differences.
 
 dems:
-  - path: "/exampleData/toy_ArcticDEM_2009.tif"
+  - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_ArcticDEM_2009.tif"
     nickname: "ArcticDEM2009_toy"
     src_vcrs: "Ellipsoid"
     src_hcrs: "EPSG:4326"
     nodata: -9999
 
-  - path: "/exampleData/toy_IFSAR_DTM_2010.tif"
-    nickname: "IFSAR2010_toy"           # used in output filename and print statements
-    src_vcrs: "NAVD88"            # options: "Ellipsoid", "EGM96", "NAVD88",
-                                  # or any valid EPSG code, see https://epsg.io/
-    src_hcrs: "EPSG:3338"         # any valid EPSG code, see https://epsg.io/
+  - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_IFSAR_DTM_2010.tif"
+    nickname: "IFSAR2010_toy"
+    src_vcrs: "NAVD88"
+    src_hcrs: "EPSG:3338"
     nodata: -9999
 
-  - path: "/exampleData/toy_Lidar2025.tif"
+  - path: "/import/home/mcoombs2/diffDEM/exampleData/toy_Lidar2025.tif"
     nickname: "Lidar2025_toy"
     src_vcrs: "Ellipsoid"
     src_hcrs: "EPSG:32606"
