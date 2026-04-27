@@ -36,12 +36,12 @@ options:
   #   sequential: differences consecutive DEMs in list order
   #   all: differences every possible combination of DEMs
   #   explicit: user-defined pairs listed below under explicit_pairs
-  pairs: "sequential"
+  pairs: "explicit"
 
   # Only used when pairs: "explicit"
   # Format: [dem1_nickname, dem2_nickname] uses global coregister default
   #         [dem1_nickname, dem2_nickname, true/false] overrides per pair
-  # explicit_pairs:
-  #   - ["ArcticDEM2009_toy", "IFSAR2010_toy", true] # coregister override: true
-  #   - ["ArcticDEM2009_toy", "Lidar2025_toy", false] # coregister override: false
-  #   - ["IFSAR2010_toy", "Lidar2025_toy", true] # uses global coregister default
+  explicit_pairs:
+    - ["ArcticDEM2009_toy", "IFSAR2010_toy", true] # coregister override: true
+    - ["ArcticDEM2009_toy", "Lidar2025_toy", false] # coregister override: false
+    - ["IFSAR2010_toy", "Lidar2025_toy", true] # uses global coregister default
