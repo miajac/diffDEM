@@ -19,15 +19,19 @@ import yaml
 import xdem
 import pyproj
 import geoutils as gu
+import rasterio
 import numpy as np
 import tempfile
 import shutil
 import argparse
 
+        
+
 from pyproj.transformer import TransformerGroup
 from multiprocessing import Pool, cpu_count
 from functools import partial
 from pathlib import Path
+from rasterio.merge import merge
 
 
 def load_config(config_path):
@@ -390,10 +394,10 @@ class DEMDifferencerParallel:
         sector_id, y_start, y_end, x_start, x_end = sector_info
         try:
             transform = self.dem1.transform
-            left   = transform.c + x_start * transform.a
-            top    = transform.f + y_start * transform.e
-            right  = transform.c + x_end   * transform.a
-            bottom = transform.f + y_end   * transform.e
+            left = transform.c + x_start * transform.a
+            top = transform.f + y_start * transform.e
+            right = transform.c + x_end * transform.a
+            bottom = transform.f + y_end * transform.e
 
             dem1_sector = self.dem1.crop((left, bottom, right, top), 
                                          inplace=False)
@@ -416,65 +420,12 @@ class DEMDifferencerParallel:
         except Exception as e:
             print(f"[Sector {sector_id:05d}] ERROR: {e}")
             raise
-
-
-    def difference_sectors_parallel(self):
-        """
-        Difference DEMs by splitting into sectors and processing in parallel.
-        """
-        print("\nDifferencing DEMs via parallel sector processing:")
-
-        # Create temp directory
-        self.temp_dir = tempfile.mkdtemp(prefix="dem_diff_sectors_")
-        print(f"Created temp directory: {self.temp_dir}")
-
-        # Define sectors
-        sectors = self._define_sectors()
-
-        # Process sectors in parallel
-        print(f"Processing {len(sectors)} sectors with "
-              f"{self.num_workers} workers...")
-        with Pool(processes=self.num_workers) as pool:
-            sector_files = pool.map(self._process_sector, sectors)
-
-        print(f"\nAll {len(sector_files)} sectors processed successfully")
-
-        # Mosaic sector files back into single DEM
-        print("\nMosaicking sectors into final DEM...")
-        self.diff_dem = self._mosaic_sectors(sector_files)
-        print("Mosaicking complete")
-
-        # Clean up temp directory
-        shutil.rmtree(self.temp_dir)
-        print(f"Cleaned up temp directory: {self.temp_dir}")
-
-
-    def _mosaic_sectors(self, sector_files):
-        """
-        Mosaic sector files into a single DEM.
-        
-        Uses geoutils to read and combine sectors while preserving
-        georeferencing.
-        """
-        # Load all sector files
-        sectors_data = [gu.Raster(f) for f in sector_files]
-
-        # Stack and merge (geoutils handles georeferencing)
-        # Since sectors are non-overlapping and adjacent, we can use simple
-        # concatenation along spatial dimensions or use rasterio.merge equivalent
-        mosaicked = self._merge_rasters(sectors_data)
-        return mosaicked
-
-
+    
     def _merge_rasters(self, raster_list):
         """
         Merge a list of non-overlapping geoutils Rasters into one.
         Uses rasterio.merge on the temp sector files directly.
         """
-        
-        import rasterio
-        from rasterio.merge import merge
-
         # Open all sector files
         src_files = [rasterio.open(r.filename) for r in raster_list]
 
@@ -502,10 +453,57 @@ class DEMDifferencerParallel:
 
         # Load back as xdem.DEM to preserve type
         merged_dem = xdem.DEM(merged_path, nodata=self.dem2.nodata)
-        merged_dem.load()         # force data into memory before file deletion
+        merged_dem.load() # force data into memory before file deletion
         merged_dem.set_vcrs(self.TARGET_VCRS)
         os.remove(merged_path)              
         return merged_dem
+
+
+    def _mosaic_sectors(self, sector_files):
+        """
+        Mosaic sector files into a single DEM.
+        Uses geoutils to read and combine sectors while preserving
+        georeferencing.
+        """
+        # Load all sector files
+        sectors_data = [gu.Raster(f) for f in sector_files]
+
+        # Stack and merge
+        # Since sectors are non-overlapping and adjacent, we reference 
+        # _merge_rasters (above)
+        mosaicked = self._merge_rasters(sectors_data)
+        return mosaicked
+    
+
+    def difference_sectors_parallel(self):
+        """
+        Difference DEMs by splitting into sectors and processing in parallel.
+        """
+        print("\nDifferencing DEMs via parallel sector processing:")
+
+        # Create temp directory
+        self.temp_dir = tempfile.mkdtemp(prefix="dem_diff_sectors_")
+        print(f"Created temp directory: {self.temp_dir}")
+
+        # Define sectors
+        sectors = self._define_sectors()
+
+        # Process sectors in parallel
+        print(f"Processing {len(sectors)} sectors with "
+              f"{self.num_workers} workers...")
+        with Pool(processes=self.num_workers) as pool:
+            sector_files = pool.map(self._process_sector, sectors)
+
+        print(f"\nAll {len(sector_files)} sectors processed successfully")
+
+        # Mosaic sector files back into single DEM using _mosaic_sectors (above)
+        print("\nMosaicking sectors into final DEM...")
+        self.diff_dem = self._mosaic_sectors(sector_files)
+        print("Mosaicking complete")
+
+        # Clean up temp directory
+        shutil.rmtree(self.temp_dir)
+        print(f"Cleaned up temp directory: {self.temp_dir}")
 
 
     def check_stable_terrain(self):
