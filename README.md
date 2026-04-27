@@ -143,7 +143,6 @@ git clone https://github.com/miajac/diffDEM.git
 cd diffDEM
 
 # Set up conda environment
-source ~/miniforge3/etc/profile.d/conda.sh
 conda env create -f demDiff.yml
 conda activate demDiff
 
