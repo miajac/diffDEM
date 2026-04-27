@@ -559,19 +559,19 @@ if __name__ == "__main__":
     cfg = load_config(config_path)
  
     differencer = DEMDifferencer(
-        path_dem1     = cfg["dem1"]["path"],
+        path_dem1 = cfg["dem1"]["path"],
         nickname_dem1 = cfg["dem1"]["nickname"],
         src_vcrs_dem1 = cfg["dem1"]["src_vcrs"],
         src_hcrs_dem1 = cfg["dem1"]["src_hcrs"],
-        nodata_dem1   = cfg["dem1"]["nodata"],
-        path_dem2     = cfg["dem2"]["path"],
+        nodata_dem1 = cfg["dem1"]["nodata"],
+        path_dem2 = cfg["dem2"]["path"],
         nickname_dem2 = cfg["dem2"]["nickname"],
         src_vcrs_dem2 = cfg["dem2"]["src_vcrs"],
         src_hcrs_dem2 = cfg["dem2"]["src_hcrs"],
-        nodata_dem2   = cfg["dem2"]["nodata"],
-        roi           = cfg["options"].get("roi", None),
-        coregister    = cfg["options"].get("coregister", False),
-        path_dest     = cfg["options"]["path_dest"],
+        nodata_dem2 = cfg["dem2"]["nodata"],
+        roi = cfg["options"].get("roi", None),
+        coregister = cfg["options"].get("coregister", False),
+        path_dest = cfg["options"]["path_dest"],
     )
  
     differencer.run()
