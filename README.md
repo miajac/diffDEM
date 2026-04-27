@@ -37,11 +37,6 @@ multi-core machines. Key differences from the basic script include:
 - **Same config file format**: uses identical `.yml` parameter files as the 
   basic script, so no changes to your config are needed to switch between versions
 
-Run with:
-```bash
-python dem_diff_parallel.py config_ifsar_lidar.yml --num-sectors 4 --workers auto
-```
-
 ### 3. Supercomputer Batch Script
 An MPI-enabled version of the DEM differencing script designed for 
 supercomputer environments with SLURM job scheduling. Features include:
@@ -54,11 +49,6 @@ supercomputer environments with SLURM job scheduling. Features include:
   generated per job
 - **Same config format**: uses a similar `.yml` parameter file as the other 
   scripts, extended to support multiple DEMs and pair definitions
-
-Run with:
-```bash
-sbatch dem_diff_batch.sh
-```
 
 ### 4. Example Implementation
 Working examples using cropped DEMs covering a small area of the Canwell 
