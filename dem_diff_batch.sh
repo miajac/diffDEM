@@ -9,8 +9,8 @@
 #SBATCH --error=demDiff_%j.err
 
 # Load required modules 
-module load anaconda
-module load openmpi
+source ~/miniforge3/etc/profile.d/conda.sh
+module load OpenMPI/4.1.4
 
 # Activate conda environment
 conda activate demDiff
