@@ -162,29 +162,7 @@ python -c "import pyproj; print(pyproj.datadir.get_data_dir())"
 ### Basic and Parallel Scripts
 
 Parameters are passed via a YAML config file. Copy `config_template.yml`, 
-rename it, and fill in your values:
-
-```yaml
-dem1:
-  path: "/path/to/your/first_dem.tif"
-  nickname: "ShortName1"
-  src_vcrs: "EGM96"        # options: "Ellipsoid", "EGM96", "NAVD88", valid EPSG code
-  src_hcrs: "EPSG:4326"    # any valid EPSG code, see https://epsg.io/
-  nodata: -9999
-
-dem2:
-  path: "/path/to/your/second_dem.tif"
-  nickname: "ShortName2"
-  src_vcrs: "Ellipsoid"
-  src_hcrs: "EPSG:32606"
-  nodata: -9999
-
-options:
-  path_dest: "/path/to/output/folder/"  # trailing slash required
-  roi: null                              # path to vector file, or null
-  coregister: false                      # true or false
-```
-
+rename it, and fill in your values.
 Then run:
 
 ```bash
@@ -197,29 +175,7 @@ python dem_diff_parallel.py config_myrun.yml --num-sectors 4 --workers auto
 
 ### Batch Script (Supercomputer)
 
-Copy `config_batch_template.yml`, rename it, and fill in your values:
-
-```yaml
-dems:
-  - path: "/path/to/dem_2010.tif"
-    nickname: "DEM2010"
-    src_vcrs: "NAVD88"
-    src_hcrs: "EPSG:3338"
-    nodata: -9999
-
-  - path: "/path/to/dem_2025.tif"
-    nickname: "DEM2025"
-    src_vcrs: "Ellipsoid"
-    src_hcrs: "EPSG:32606"
-    nodata: -9999
-
-options:
-  path_dest: "/path/to/output/folder/"
-  roi: null
-  coregister: false
-  pairs: "sequential"  # or "all" or "explicit"
-```
-
+Copy `config_batch_template.yml`, rename it, and fill in your values.
 Update `dem_diff_batch.sh` with the correct number of nodes (one per DEM pair), then submit:
 
 ```bash
@@ -230,6 +186,30 @@ Check job status with:
 ```bash
 squeue -u yourusername
 ```
+---
+
+## Running the Examples
+
+### Basic and Parallel Scripts (Two-DEM Toy Example)
+Uses `toy_IFSAR_DTM_2010.tif` and `toy_Lidar2025.tif` (two DEMs of Canwell Glacier with different CRS and vertical datums).
+
+```bash
+# Basic script
+python dem_diff.py config_toy.yml
+
+# Parallel script
+python dem_diff_parallel.py config_toy.yml --num-sectors 4 --workers auto
+```
+
+### Batch Script (Three-DEM Toy Example)
+Uses `toy_IsabelIFSAR_2000.tif`, `toy_IFSAR_DTM_2010.tif`, and `toy_Lidar2025.tif` (three DEMs of Canwell Glacier that run simultaneously across nodes). 
+
+```bash
+sbatch dem_diff_batch.sh
+```
+
+Output files will be saved to the directory specified in `path_dest` in your config file, named `nickname_dem2_nickname_dem1.tif`.
+
 ---
 
 ## Acknowledgments
