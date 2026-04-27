@@ -11,4 +11,3 @@
 - pyproj
 - pyyaml
 - mpi4py
-- rasterio
