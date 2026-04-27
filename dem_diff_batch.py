@@ -43,8 +43,8 @@ class DEMDifferencerBatch:
     Each task processes its assigned DEM pair using the full dem_diff
     pipeline (load, prepare, align, coregister, difference, save).
     
-    Coregistration can be set globally via coregister_default, and overridden
-    per pair in the config file.
+    Coregistration can be set globally with coregister_default, and overridden
+    for each pair in the config file.
 
     Parameters:
     dems : list of dict
@@ -270,7 +270,7 @@ class DEMDifferencerBatch:
                     f"(coregister={coreg})"
                 )
 
-        # Distribute pairs across tasks — round-robin
+        # Distribute pairs across tasks
         my_pairs = [
             (i, self.pairs[i])
             for i in range(total_pairs)
