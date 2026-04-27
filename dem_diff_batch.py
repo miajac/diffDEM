@@ -33,7 +33,12 @@ import geoutils as gu
 import numpy as np
 from itertools import combinations
 from pyproj.transformer import TransformerGroup
-from mpi4py import MPI
+
+try:
+    from mpi4py import MPI
+    MPI_AVAILABLE = True
+except ImportError:
+    MPI_AVAILABLE = False
 
 
 class DEMDifferencerBatch:
