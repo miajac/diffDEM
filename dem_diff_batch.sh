@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name = demDiff_batch
-#SBATCH --nodes = 3 # should be one node per DEM pair
-#SBATCH --ntasks-per-node = 1
-#SBATCH --cpus-per-task = 4
-#SBATCH --mem = 64G # memory per node
-#SBATCH --time = 04:00:00 # kill time
-#SBATCH --output = demDiff_%j.log # log file (%j = job ID)
-#SBATCH --error = demDiff_%j.err
+#SBATCH --job-name=demDiff_batch
+#SBATCH --nodes=3 # should be one node per DEM pair
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=64G # memory per node
+#SBATCH --time=04:00:00 # kill time
+#SBATCH --output=demDiff_%j.log # log file (%j = job ID)
+#SBATCH --error=demDiff_%j.err
 
 # Load required modules 
 module load anaconda
