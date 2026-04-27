@@ -210,9 +210,7 @@ class DEMDifferencer:
 
 
     def load(self):
-
         """Load both DEMs from file and print info before any corrections."""
-
         # add DEMs and manually assert their no data values
         self.dem1 = xdem.DEM(self.path_dem1, nodata = self.nodata_dem1)
         self.dem2 = xdem.DEM(self.path_dem2, nodata = self.nodata_dem2)
@@ -459,9 +457,7 @@ class DEMDifferencer:
 
 
     def difference(self):
-
         """Difference the two aligned DEMs (DEM2 - DEM1) and print stats."""
-        
         self.diff_dem = self.dem2 - self.dem1
 
         # Stamp vertical CRS on diff DEM since arithmetic drops it
@@ -471,13 +467,11 @@ class DEMDifferencer:
 
 
     def check_stable_terrain(self):
-
         """
         Check elevation differences on flat stable terrain after differencing.
         A systematic offset on flat terrain indicates a vertical datum mismatch.
         Mean offset > 2m on flat terrain (slope < 5 degrees) triggers a warning.
         """
-
         print("\nStable terrain check:")
         slope = xdem.terrain.slope(self.diff_dem)
         flat_mask = (slope.data < 5) & (~np.ma.getmaskarray(self.diff_dem.data))
@@ -529,18 +523,14 @@ class DEMDifferencer:
 
 
     def save(self):
-
         """Save the differenced DEM to the output path."""
-
         self.diff_dem.to_file(self.output_path)
         print(f"\nDifferenced DEM saved to: {self.output_path}")
 
 
     def run(self):
-
         """Run the full pipeline: load, prepare, align, difference, plot, 
         save."""
-        
         self._check_grids()
         self.load()
         self.prepare()
