@@ -42,6 +42,6 @@ options:
   # Format: [dem1_nickname, dem2_nickname] uses global coregister default
   #         [dem1_nickname, dem2_nickname, true/false] overrides per pair
   explicit_pairs:
-    - ["ArcticDEM2009_toy", "IFSAR2010_toy", true] # coregister override: true
+    - ["ArcticDEM2009_toy", "IFSAR2010_toy", false] # coregister override: true
     - ["ArcticDEM2009_toy", "Lidar2025_toy", false] # coregister override: false
-    - ["IFSAR2010_toy", "Lidar2025_toy", true] # uses global coregister default
+    - ["IFSAR2010_toy", "Lidar2025_toy", false] # uses global coregister default
